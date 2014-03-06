@@ -1,10 +1,11 @@
 module.exports = (function() {
-    var fs = require('fs');
-    
+    var fs = require('fs'),
+        _ = require('lodash');
+
     return {
         regExpSection: /^\s*\[(.*?)\]\s*$/,
         regExpComment: /^;.*/,
-        regExpSimpleSingleLine: /^\s*(.*?)\s*?=\s*?[^"](.*?)$/,
+        regExpSimpleSingleLine: /^\s*(.*?)\s*?=\s*?([^"].*?)$/,
         regExpQuotedSingleLine: /^\s*(.*?)\s*?=\s*?"(.*?)"$/,
         regExpMultiLine: /^\s*(.*?)\s*?=\s*?"(.*?)$/,
         regExpMultiLineEnd: /^(.*?)"$/,
@@ -99,20 +100,49 @@ module.exports = (function() {
             var content = fs.readFileSync(filename, {encoding: 'utf8'});
             return content.split('\n');
         },
+        serializeContent: function (content, path) {
+            var serialized = '';
+            for (var key in content) {
+                var subContent = content[key];
+                if (_.isArray(subContent)) {
+                    for (index in subContent) {
+                        serialized += path + (path.length>0?'.':'') + key + "[]=\"" + subContent[index] + "\"\n";
+                    }
+                }
+                else if (_.isObject(subContent)) {
+                    serialized += this.serializeContent(subContent, path + (path.length>0?'.':'') + key);
+                }
+                else {
+                    serialized += path + (path.length>0?'.':'') + key +"=\"" + subContent + "\"\n";
+                }
+
+
+            }
+
+            return serialized;
+        },
+        serialize: function(data) {
+            var out = "";
+            for (var section in data) {
+                var sectionContent = data[section];
+                out += "[" + section + "]\n";
+                out += this.serializeContent(sectionContent, '');
+            }
+
+            return out;
+        },
         read: function(filename) {
             var lines = this.fetchLines(filename);
             var ini = {},
                 current = ini,
                 multiLineKeys = false, multiLineValue;
-            
+
             for (index in lines) {
-                var line = lines[index];
+                var line = lines[index].trim();
 
                 if (this.isComment(line)) {
-//                    console.log('comment');
                 }
                 else if (this.isSection(line)) {
-//                    console.log('section');
                     var section = this.getSection(line);
                     
                     if (typeof ini[section] == 'undefined') {
@@ -154,7 +184,7 @@ module.exports = (function() {
             return ini;
         },
         write: function (filename, content) {
-            fs.writeFileSync(filename, content, {encoding: 'utf8'});
+            fs.writeFileSync(filename, this.serialize(content), {encoding: 'utf8'});
         }
     };
 })();

@@ -1,2 +1,4 @@
 ini = require('./index.js')
-console.log(ini.read('test/example.ini'));
+data = ini.read('test/example.ini');
+
+ini.write('test/out.ini', data);
