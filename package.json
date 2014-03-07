@@ -6,8 +6,24 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Michael Geppert",
-  "license": "MIT",
+  "homepage": "https://github.com/evangelion1204/multi-ini",
+  "author": {
+    "name": "Michael Geppert",
+    "email": "evangelion1204@aol.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/evangelion1204/multi-ini.git"
+  },
+  "bugs": {
+    "url": "https://github.com/evangelion1204/multi-ini/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/evangelion1204/grunt-lock/blob/master/LICENSE"
+    }
+  ],
   "devDependencies": {
     "lodash": "^2.4.1"
   }
