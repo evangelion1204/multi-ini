@@ -2,9 +2,9 @@
   "name": "multi-ini",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "src/multi-ini.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "grunt jasmine_node"
   },
   "homepage": "https://github.com/evangelion1204/multi-ini",
   "author": {
@@ -25,6 +25,11 @@
     }
   ],
   "devDependencies": {
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "grunt": "^0.4.2",
+    "grunt-contrib-jasmine": "^0.6.1",
+    "grunt-contrib-coffee": "^0.10.1",
+    "grunt-contrib-clean": "^0.5.0",
+    "grunt-jasmine-node": "^0.1.0"
   }
 }
