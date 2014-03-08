@@ -1,4 +1,4 @@
-# multi-ini
+# multi-ini [![Build Status](https://travis-ci.org/evangelion1204/multi-ini.png?branch=master)](https://travis-ci.org/evangelion1204/multi-ini)
 
 Read multilevel and multiline ini files in compatible with Zend.
 
