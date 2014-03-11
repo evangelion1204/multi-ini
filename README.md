@@ -1,6 +1,6 @@
 # multi-ini [![Build Status](https://travis-ci.org/evangelion1204/multi-ini.png?branch=master)](https://travis-ci.org/evangelion1204/multi-ini)
 
-Read multi-level and multi-line ini-files which compatibility to Zend.
+Read multi-level and multi-line ini-files with compatibility to Zend.
 
 ## Install
 
