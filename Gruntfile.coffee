@@ -38,7 +38,7 @@ module.exports = (grunt) ->
     grunt.loadNpmTasks('grunt-jasmine-node')
 
     grunt.registerTask('prepare-test', () ->
-        fs.mkdirSync 'test/out'
+#        fs.mkdirSync 'test/out'
     )
 
     grunt.registerTask('default', ['clean:build', 'coffee:build'])
