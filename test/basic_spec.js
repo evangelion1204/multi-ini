@@ -1,7 +1,8 @@
-describe("Basic testing includes reading of different files", function() {
-    var MultiIni = require('../src/multi-ini.js');
+describe("Basic testing includes reading of different files", function () {
+    var fs = require('fs');
+    var MultiIni = require('../lib/multi-ini-class.js');
 
-    it("Availability of the class ", function() {
+    it("Availability of the class ", function () {
         expect(MultiIni).not.toBeUndefined();
         expect(MultiIni).not.toBeNull();
     });
@@ -98,6 +99,106 @@ describe("Basic testing includes reading of different files", function() {
         expect(data['section1']['key3']['subkey'][0]).toBe('value4');
         expect(data['section1']['key3']['subkey'][1]).toBe('value5');
 
+    });
+
+    it("Write ini file with one section and multiple single line values", function () {
+        var data = {
+            section1: {
+                key1: 'value1',
+                key2: 'value2'
+            }
+        };
+
+        MultiIni.write('test/out/single.ini', data);
+
+        var content = fs.readFileSync('test/out/single.ini', {encoding: 'utf8'});
+        var expectedContent = fs.readFileSync('test/data/result/single.ini', {encoding: 'utf8'});
+
+        expect(content).toBe(expectedContent);
+    });
+
+    it("Write ini file with one section and multiple multi level single line values", function () {
+        var data = {
+            section1: {
+                key1: {
+                    subkey1: 'value1',
+                    subkey2: 'value2'
+                },
+                key2: {
+                    subkey: 'value3'
+                }
+            }
+        };
+
+        MultiIni.write('test/out/multi_level.ini', data);
+
+        var content = fs.readFileSync('test/out/multi_level.ini', {encoding: 'utf8'});
+        var expectedContent = fs.readFileSync('test/data/result/multi_level.ini', {encoding: 'utf8'});
+
+        expect(content).toBe(expectedContent);
+    });
+
+    it("Write a file with single and multi level and array definitions", function () {
+        var data = {
+            section1: {
+                key1: {
+                    subkey1: ['value1', 'value2'],
+                    subkey2: 'value3'
+                },
+                key2: ['value4', 'value5']
+            }
+        };
+
+        MultiIni.write('test/out/array.ini', data);
+
+        var content = fs.readFileSync('test/out/array.ini', {encoding: 'utf8'});
+        var expectedContent = fs.readFileSync('test/data/result/array.ini', {encoding: 'utf8'});
+
+        expect(content).toBe(expectedContent);
+    });
+
+    it("Write a file with single and multi level with multi line", function () {
+        var data = {
+            section1: {
+                key1: {
+                    subkey1: 'line1\nline2',
+                    subkey2: '\nline2',
+                    subkey3: '\nline2\n',
+                    subkey4: 'value1'
+                },
+                key2: 'line1\nline2',
+                key3: '\nline2',
+                key4: '\nline2\n',
+                key5: 'value2'
+            }
+        };
+
+        MultiIni.write('test/out/multi_line.ini', data);
+
+        var content = fs.readFileSync('test/out/multi_line.ini', {encoding: 'utf8'});
+        var expectedContent = fs.readFileSync('test/data/result/multi_line.ini', {encoding: 'utf8'});
+
+        expect(content).toBe(expectedContent);
+    });
+
+    it("Write a file with single and multi level, multi line and array", function () {
+        var data = {
+            section1: {
+                key1: {
+                    subkey1: ['line1\nline2', '\nline2', '\nline2\n', 'value1'],
+                    subkey2: 'value2'
+                },
+                key2: ['line1\nline2', '\nline2', '\nline2\n', 'value3'],
+                key3: 'value4'
+            }
+        };
+
+        MultiIni.write('test/out/all.ini', data);
+
+        var content = fs.readFileSync('test/out/all.ini', {encoding: 'utf8'});
+        var expectedContent = fs.readFileSync('test/data/result/all.ini', {encoding: 'utf8'});
+
+        expect(content).toBe(expectedContent);
     });
 
 });
