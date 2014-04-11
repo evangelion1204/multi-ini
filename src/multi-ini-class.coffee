@@ -2,6 +2,9 @@ fs = require 'fs'
 _  = require 'lodash'
 
 class MultiIni
+    options:
+        encoding: 'utf8'
+
     regExpSection: /^\s*\[(.*?)\]\s*$/
     regExpComment: /^;.*/
     regExpSimpleSingleLine: /^\s*(.*?)\s*?=\s*?([^"].*?)$/
@@ -75,13 +78,12 @@ class MultiIni
         result = line.match @regExpArray
         return result[1]
 
-    fetchLines: (filename) ->
-        content = fs.readFileSync(filename, {encoding: 'utf8'})
+    fetchLines: (filename, options) ->
+        content = fs.readFileSync(filename, options)
         return content.split '\n'
 
     serializeContent: (content, path) ->
         serialized = ''
-        console.log path
         for key, subContent of content
             if _.isArray(subContent)
                 for value in subContent
@@ -91,7 +93,6 @@ class MultiIni
             else
                 serialized += path + (if path.length>0 then '.' else '') + key + "=\"" + subContent + "\"\n"
 
-        console.log serialized
         return serialized
 
     serialize: (data) ->
@@ -102,8 +103,10 @@ class MultiIni
 
         return out
 
-    read: (filename) ->
-        lines = @fetchLines(filename)
+    read: (filename, options = {}) ->
+        options = _.extend(_.clone(@options), options)
+
+        lines = @fetchLines(filename, options)
         ini = {}
         current = ini
         multiLineKeys = false
@@ -146,7 +149,9 @@ class MultiIni
 
         return ini
 
-    write: (filename, content) ->
-        fs.writeFileSync(filename, @serialize(content), {encoding: 'utf8'})
+    write: (filename, content, options = {}) ->
+        options = _.extend(_.clone(@options), options)
+
+        fs.writeFileSync(filename, @serialize(content), options)
 
 module.exports = new MultiIni

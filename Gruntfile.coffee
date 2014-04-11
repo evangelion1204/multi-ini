@@ -5,7 +5,7 @@ module.exports = (grunt) ->
     grunt.initConfig
         clean:
             build: ['test/*.coffee']
-            test: ['test/*.coffee', 'test/out']
+            test: ['test/*.coffee', 'test/out/*.ini']
 
         coffee:
             options:

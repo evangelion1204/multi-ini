@@ -1,7 +1,7 @@
 {
   "name": "multi-ini",
-  "version": "0.1.2",
-  "description": "",
+  "version": "0.2.0",
+  "description": "An ini-file parser which supports multi line, multiple levels and arrays to get a maximum of compatibility with Zend config files.",
   "main": "lib/multi-ini.js",
   "scripts": {
     "test": "grunt jasmine_node"
@@ -24,6 +24,7 @@
       "url": "https://github.com/evangelion1204/grunt-lock/blob/master/LICENSE"
     }
   ],
+  "keywords": ["ini", "zend", "config", "multi-line", "multi-level"],
   "devDependencies": {
     "lodash": "^2.4.1",
     "grunt": "^0.4.2",

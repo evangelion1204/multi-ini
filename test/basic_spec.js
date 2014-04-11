@@ -8,7 +8,7 @@ describe("Basic testing includes reading of different files", function () {
     });
 
     it("Read a basic with a section and 2 simple keys and a comment", function () {
-        var data = MultiIni.read('test/data/single.ini')
+        var data = MultiIni.read('test/data/single.ini', {test: 1})
 
         expect(data).not.toBeNull();
 
@@ -200,5 +200,36 @@ describe("Basic testing includes reading of different files", function () {
 
         expect(content).toBe(expectedContent);
     });
+
+    it("Write a ascii ini file and write it manuel", function () {
+        var data = {
+            section: {
+                key: "Straße mit Häusern"
+            }
+        };
+
+        MultiIni.write('test/out/ascii.ini', data, {encoding: 'ascii'});
+        fs.writeFileSync('test/out/ascii_serialized.ini', MultiIni.serialize(data), {encoding: 'ascii'});
+
+
+        var content = fs.readFileSync('test/out/ascii.ini', {encoding: 'ascii'});
+        var expectedContent = fs.readFileSync('test/out/ascii_serialized.ini', {encoding: 'ascii'});
+
+        expect(content).toBe(expectedContent);
+    });
+
+//    it("Compare both reading results, via ini and manuel", function () {
+//        var data = {
+//            section: {
+//                key: "Straße mit Häusern"
+//            }
+//        };
+//
+//        MultiIni.write('test/out/ascii_read_write.ini', data, {encoding: 'ascii'});
+//
+//        var content = MultiIni.read('test/out/ascii_read_write.ini', {encoding: 'ascii'});
+//
+//        expect(content.section.key).toBe(data.section.key);
+//    });
 
 });
