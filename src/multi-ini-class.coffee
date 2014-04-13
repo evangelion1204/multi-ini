@@ -4,14 +4,20 @@ _  = require 'lodash'
 class MultiIni
     options:
         encoding: 'utf8'
+        ignore_invalid: true
+        oninvalid: () ->
+            return true
 
     regExpSection: /^\s*\[(.*?)\]\s*$/
     regExpComment: /^;.*/
     regExpSimpleSingleLine: /^\s*(.*?)\s*?=\s*?([^"].*?)$/
-    regExpQuotedSingleLine: /^\s*(.*?)\s*?=\s*?"(.*?)"$/
+    regExpQuotedSingleLine: /^\s*(.*?)\s*?=\s*?"(.*?)"(.*?)$/
     regExpMultiLine: /^\s*(.*?)\s*?=\s*?"(.*?)$/
-    regExpMultiLineEnd: /^(.*?)"$/
+    regExpMultiLineEnd: /^(.*?)"(.*?)$/
     regExpArray: /^(.*?)\[\]$/
+
+    STATUS_OK: 0
+    STATUS_INVALID: 1
 
     isSection: (line) ->
         line.match @regExpSection
@@ -59,10 +65,11 @@ class MultiIni
 
     getKeyValue: (line) ->
         result = line.match @regExpQuotedSingleLine
-        return [result[1], result[2]] if result
+
+        return [result[1], result[2], if result[3].length > 0 then @STATUS_INVALID else @STATUS_OK ] if result
 
         result = line.match @regExpSimpleSingleLine
-        return [result[1], result[2]] if result
+        return [result[1], result[2], @STATUS_OK] if result
 
         throw new Error()
 
@@ -72,7 +79,8 @@ class MultiIni
 
     getMultiLineEndValue: (line) ->
         result = line.match @regExpMultiLineEnd
-        return result[1] if result
+
+        return [result[1], if result[2].length > 0 then @STATUS_INVALID else @STATUS_OK ] if result
 
     getArrayKey: (line) ->
         result = line.match @regExpArray
@@ -125,7 +133,15 @@ class MultiIni
                 current = ini[section];
 
             else if @isSingleLine(line)
-                [key, value] = @getKeyValue(line)
+                [key, value, status] = @getKeyValue(line)
+
+                # abort on false of onerror callback if we meet an invalid line
+                return if status == @STATUS_INVALID and not options.oninvalid(line)
+
+                # skip entry
+                if status == @STATUS_INVALID and options.ignore_invalid
+                    continue
+
                 keys = key.split('.')
                 @assignValue(current, keys, value)
 
@@ -138,7 +154,20 @@ class MultiIni
 
             else if multiLineKeys
                 if @isMultiLineEnd(line)
-                    multiLineValue += '\n' + @getMultiLineEndValue(line)
+                    [value, status] = @getMultiLineEndValue(line)
+
+                    # abort on false of onerror callback if we meet an invalid line
+                    return if status == @STATUS_INVALID and not options.oninvalid(line)
+
+                    # ignore whole multiline on invalid
+                    if (status == @STATUS_INVALID and options.ignore_invalid)
+                        multiLineKeys = false
+                        multiLineValue = ""
+
+                        continue
+
+                    multiLineValue += '\n' + value
+
                     @assignValue(current, multiLineKeys, multiLineValue)
 
                     multiLineKeys = false

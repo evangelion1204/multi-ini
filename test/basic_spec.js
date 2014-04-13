@@ -8,7 +8,7 @@ describe("Basic testing includes reading of different files", function () {
     });
 
     it("Read a basic with a section and 2 simple keys and a comment", function () {
-        var data = MultiIni.read('test/data/single.ini', {test: 1})
+        var data = MultiIni.read('test/data/single.ini')
 
         expect(data).not.toBeNull();
 
@@ -231,5 +231,43 @@ describe("Basic testing includes reading of different files", function () {
 //
 //        expect(content.section.key).toBe(data.section.key);
 //    });
+
+    it("Read a file with an invalid lines ignoring it", function () {
+        var data = MultiIni.read('test/data/invalid_line.ini')
+
+        expect(data).not.toBeNull();
+
+        expect(data['section']).toBeDefined();
+
+        expect(data['section']['valid']).toBe('valid');
+
+        expect(data['section']['invalid']).not.toBeDefined();
+
+        expect(data['section']['invalid_multiline']).not.toBeDefined();
+    });
+
+    it("Read a file with an invalid lines reading it", function () {
+        var data = MultiIni.read('test/data/invalid_line.ini', {ignore_invalid: false})
+
+        expect(data).not.toBeNull();
+
+        expect(data['section']).toBeDefined();
+
+        expect(data['section']['valid']).toBe('valid');
+
+        expect(data['section']['invalid']).toBe('invalid');
+
+        expect(data['section']['invalid_multiline']).toBe('line1\nline2\nline3');
+    });
+
+    it("Read a file with an invalid with invalid callback and abort", function () {
+        var cb = function (line) {
+            expect(line).toBe('invalid="invalid"a')
+            return false
+        };
+        var data = MultiIni.read('test/data/invalid_line.ini', {ignore_invalid: false, oninvalid: cb})
+
+        expect(data).toBeUndefined();
+    });
 
 });
