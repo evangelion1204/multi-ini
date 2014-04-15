@@ -22,8 +22,7 @@ ini.write(file, content);
 
 Following options are available:
 * encoding \[*'utf8'*\] - directly passed to readFileSync
-* ignore_invalid \[*true*\] - controls if invalid key/values are ignored or processed
-* oninvalid - callback function if an invalid key/value is found - return *false* aborts parsing *true* continues
+* keep_quotes \[*false*\] - does not strip quotes around values
 
 ### Examples
 
@@ -36,21 +35,22 @@ content.section.key = value;
 ini.write(file, content, {encoding: 'utf8'});
 ```
 
-#### ignore_invalid
+#### keep_quotes
+This option is by default off to be backward compatible, if you ever need the value containing the quotes then use this.
+```ini
+key="value"
+```
+Enabling this option will result in **"value"** instead of **value**.
 
 ```js
 ini = require('multi-ini');
-content = ini.read(file, {ignore_invalid: false});
+content = ini.read(file, {keep_quotes: false});
 ```
 
-#### oninvalid
+## Changelog
 
-```js
-cb = function (line) {
-    /* do something like logging or output the line which is invalid and abort with false */
-    return false
-};
+### 0.2.4
+Implemented support for constants and removed a lot of bugs and the options **ignore_invalid** and **oninvalid**, this may be introduced again but are currently not necessary.
 
-ini = require('multi-ini');
-content = ini.read(file, {oninvalid: cb});
-```
+### 0.2.3
+Fixed a bug that the module was not recognized as a module by Node.

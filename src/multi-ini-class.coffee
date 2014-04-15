@@ -11,10 +11,11 @@ class MultiIni
 
     regExpSection: /^\s*\[(.*?)\]\s*$/
     regExpComment: /^;.*/
-    regExpSimpleSingleLine: /^\s*(.*?)\s*?=\s*?([^"].*?)$/
-    regExpQuotedSingleLine: /^\s*(.*?)\s*?=\s*?"(.*?)"(.*?)$/
+    regExpSingleLine: /^\s*(.*?)\s*?=\s*?(.*?)$/
+#    regExpSimpleSingleLine: /^\s*(.*?)\s*?=\s*?([^"].*?)$/
+#    regExpQuotedSingleLine: /^\s*(.*?)\s*?=\s*?"(.*?)"(.*?)$/
     regExpMultiLine: /^\s*(.*?)\s*?=\s*?"(.*?)$/
-    regExpMultiLineEnd: /^(.*?)"(.*?)$/
+    regExpMultiLineEnd: /^(.*?)"$/
     regExpArray: /^(.*?)\[\]$/
 
     STATUS_OK: 0
@@ -30,10 +31,22 @@ class MultiIni
         line.match @regExpComment
 
     isSingleLine: (line) ->
-        line.match(@regExpQuotedSingleLine) or line.match(@regExpSimpleSingleLine)
+        result = line.match(@regExpSingleLine)
+
+        return false unless result
+
+        check = result[2].match(/"/g)
+
+        return not check or (check.length % 2 == 0)
 
     isMultiLine: (line) ->
-        line.match @regExpMultiLine
+        result = line.match @regExpMultiLine
+
+        return false unless result
+
+        check = result[2].match(/"/g)
+
+        return not check or (check.length % 2 == 0)
 
     isMultiLineEnd: (line) ->
         line.match @regExpMultiLineEnd
@@ -65,13 +78,11 @@ class MultiIni
         return element
 
     getKeyValue: (line, options) ->
-        result = line.match @regExpQuotedSingleLine
+        result = line.match @regExpSingleLine
 
-        if result
-            result[2] = '"' + result[2] + '"' if options.keep_quotes
-            return [result[1], result[2], if result[3].length > 0 then @STATUS_INVALID else @STATUS_OK ]
+        unless options.keep_quotes
+            result[2] = result[2].replace /^\s*?"(.*?)"\s*?$/, "$1"
 
-        result = line.match @regExpSimpleSingleLine
         return [result[1], result[2], @STATUS_OK] if result
 
         throw new Error()
@@ -88,7 +99,7 @@ class MultiIni
 
         result[1] = result[1] + '"' if options.keep_quotes
 
-        return [result[1], if result[2].length > 0 then @STATUS_INVALID else @STATUS_OK ] if result
+        return [result[1], @STATUS_OK ] if result
 
     getArrayKey: (line) ->
         result = line.match @regExpArray
@@ -98,18 +109,25 @@ class MultiIni
         content = fs.readFileSync(filename, options)
         return content.split '\n'
 
+    needToBeQuoted: (value) ->
+        return false if value.match /^"[\s\S]*?"$/g
+        return false if value.match /^[\s\S]*?"$/g
+        return false if value.match /^"[\s\S]*?$/g
+
+        return true
+
     serializeContent: (content, path) ->
         serialized = ''
         for key, subContent of content
             if _.isArray(subContent)
                 for value in subContent
-                    value = "\"" + value + "\"" unless value.match /("[^"]*")/g
+                    value = "\"" + value + "\"" if @needToBeQuoted(value)
 
                     serialized += path + (if path.length > 0 then '.' else '') + key + "[]=" + value + "\n"
             else if _.isObject(subContent)
                 serialized += @serializeContent(subContent, path + (if path.length > 0 then '.' else '') + key)
             else
-                subContent = "\"" + subContent + "\"" unless subContent.match /("[^"]*")/g
+                subContent = "\"" + subContent + "\"" if @needToBeQuoted(subContent)
                 serialized += path + (if path.length>0 then '.' else '') + key + "=" + subContent + "\n"
 
         return serialized
