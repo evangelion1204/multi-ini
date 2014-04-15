@@ -5,6 +5,7 @@ class MultiIni
     options:
         encoding: 'utf8'
         ignore_invalid: true
+        keep_quotes: false
         oninvalid: () ->
             return true
 
@@ -63,22 +64,29 @@ class MultiIni
 
         return element
 
-    getKeyValue: (line) ->
+    getKeyValue: (line, options) ->
         result = line.match @regExpQuotedSingleLine
 
-        return [result[1], result[2], if result[3].length > 0 then @STATUS_INVALID else @STATUS_OK ] if result
+        if result
+            result[2] = '"' + result[2] + '"' if options.keep_quotes
+            return [result[1], result[2], if result[3].length > 0 then @STATUS_INVALID else @STATUS_OK ]
 
         result = line.match @regExpSimpleSingleLine
         return [result[1], result[2], @STATUS_OK] if result
 
         throw new Error()
 
-    getMultiKeyValue: (line) ->
+    getMultiKeyValue: (line, options) ->
         result = line.match(@regExpMultiLine)
+
+        result[2] = '"' + result[2] if options.keep_quotes
+
         return [result[1], result[2]] if result
 
-    getMultiLineEndValue: (line) ->
+    getMultiLineEndValue: (line, options) ->
         result = line.match @regExpMultiLineEnd
+
+        result[1] = result[1] + '"' if options.keep_quotes
 
         return [result[1], if result[2].length > 0 then @STATUS_INVALID else @STATUS_OK ] if result
 
@@ -95,11 +103,14 @@ class MultiIni
         for key, subContent of content
             if _.isArray(subContent)
                 for value in subContent
-                    serialized += path + (if path.length > 0 then '.' else '') + key + "[]=\"" + value + "\"\n"
+                    value = "\"" + value + "\"" unless value.match /("[^"]*")/g
+
+                    serialized += path + (if path.length > 0 then '.' else '') + key + "[]=" + value + "\n"
             else if _.isObject(subContent)
                 serialized += @serializeContent(subContent, path + (if path.length > 0 then '.' else '') + key)
             else
-                serialized += path + (if path.length>0 then '.' else '') + key + "=\"" + subContent + "\"\n"
+                subContent = "\"" + subContent + "\"" unless subContent.match /("[^"]*")/g
+                serialized += path + (if path.length>0 then '.' else '') + key + "=" + subContent + "\n"
 
         return serialized
 
@@ -133,7 +144,7 @@ class MultiIni
                 current = ini[section];
 
             else if @isSingleLine(line)
-                [key, value, status] = @getKeyValue(line)
+                [key, value, status] = @getKeyValue(line, options)
 
                 # abort on false of onerror callback if we meet an invalid line
                 return if status == @STATUS_INVALID and not options.oninvalid(line)
@@ -146,7 +157,7 @@ class MultiIni
                 @assignValue(current, keys, value)
 
             else if @isMultiLine(line)
-                [key, value] = @getMultiKeyValue(line)
+                [key, value] = @getMultiKeyValue(line, options)
                 keys = key.split('.')
 
                 multiLineKeys = keys
@@ -154,7 +165,7 @@ class MultiIni
 
             else if multiLineKeys
                 if @isMultiLineEnd(line)
-                    [value, status] = @getMultiLineEndValue(line)
+                    [value, status] = @getMultiLineEndValue(line, options)
 
                     # abort on false of onerror callback if we meet an invalid line
                     return if status == @STATUS_INVALID and not options.oninvalid(line)

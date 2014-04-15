@@ -98,7 +98,6 @@ describe("Basic testing includes reading of different files", function () {
         expect(data['section1']['key3']['subkey'].length).toBe(2);
         expect(data['section1']['key3']['subkey'][0]).toBe('value4');
         expect(data['section1']['key3']['subkey'][1]).toBe('value5');
-
     });
 
     it("Write ini file with one section and multiple single line values", function () {
@@ -270,4 +269,28 @@ describe("Basic testing includes reading of different files", function () {
         expect(data).toBeUndefined();
     });
 
+    it("Read a basic file with a section and 2 simple keys and one multiline with keep quotes", function () {
+        var data = MultiIni.read('test/data/combined_keep_quotes.ini', {keep_quotes: true});
+
+        expect(data).not.toBeNull();
+
+        expect(data['section1']).toBeDefined();
+
+        expect(data['section1']['key1']).toBe('"value1"');
+
+        expect(data['section1']['multiline']).toBe('"line1\nline2\nline3\n"');
+
+        expect(data['section1']['key2']).toBe('value2');
+    });
+
+    it("Read a basic file with a section and 2 simple keys and one multiline with keep quotes and writing it", function () {
+        var data = MultiIni.read('test/data/combined_keep_quotes.ini', {keep_quotes: true});
+
+        MultiIni.write('test/out/combined_keep_quotes.ini', data);
+
+        var content = fs.readFileSync('test/out/combined_keep_quotes.ini', {encoding: 'utf8'});
+        var expectedContent = fs.readFileSync('test/data/result/combined_keep_quotes.ini', {encoding: 'utf8'});
+
+        expect(content).toBe(expectedContent);
+    });
 });
