@@ -17,6 +17,16 @@ describe("Basic testing includes reading of different files", function () {
         expect(data['section1']['key1']).toBe('value1');
 
         expect(data['section1']['key2']).toBe('value2');
+
+        expect(data['section1']['key3']).toBe('value3');
+
+        expect(data['section1']['key4']).toBe('value4');
+
+        expect(data['section1']['key5']).toBe('value5');
+
+        expect(data['section1']['key6']).toBe('value6');
+
+        expect(data['section1']['key7']).toBe(' value7');
     });
 
     it("Read a basic with a section with multi line values", function () {
