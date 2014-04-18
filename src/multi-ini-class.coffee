@@ -11,7 +11,7 @@ class MultiIni
 
     regExpSection: /^\s*\[(.*?)\]\s*$/
     regExpComment: /^;.*/
-    regExpSingleLine: /^\s*(.*?)\s*?=\s*?(.*?)$/
+    regExpSingleLine: /^\s*(.*?)\s*?=\s*?(\S.*?)$/
 #    regExpSimpleSingleLine: /^\s*(.*?)\s*?=\s*?([^"].*?)$/
 #    regExpQuotedSingleLine: /^\s*(.*?)\s*?=\s*?"(.*?)"(.*?)$/
     regExpMultiLine: /^\s*(.*?)\s*?=\s*?"(.*?)$/
