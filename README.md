@@ -49,6 +49,8 @@ content = ini.read(file, {keep_quotes: false});
 
 ## Changelog
 
+### 0.3.0
+
 ### 0.2.5
 Now correctly reads
 ```ini

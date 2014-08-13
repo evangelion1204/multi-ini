@@ -2,7 +2,7 @@ fs = require 'fs'
 _  = require 'lodash'
 
 class MultiIni
-    options:
+    default:
         encoding: 'utf8'
         ignore_invalid: true
         keep_quotes: false
@@ -21,8 +21,8 @@ class MultiIni
     STATUS_OK: 0
     STATUS_INVALID: 1
 
-    constructor: (options) ->
-        @options = _.extend(@options, options)
+    constructor: (options = {}) ->
+        @options = _.extend(_.clone(@default), options)
 
     isSection: (line) ->
         line.match @regExpSection

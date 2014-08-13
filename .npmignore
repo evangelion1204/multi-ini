@@ -1,1 +1,4 @@
 test/out/*.ini
+node_modules/
+.idea/
+.travis.yml

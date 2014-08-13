@@ -1,16 +1,9 @@
-describe("Basic testing includes reading of different files", function () {
+describe("Basic testing with backward compatibility to pre 0.3.x", function () {
     var fs = require('fs');
     var MultiIni = require('../lib/multi-ini-class.js');
 
-    it("Availability of the class ", function () {
-        expect(MultiIni).not.toBeUndefined();
-        expect(MultiIni).not.toBeNull();
-    });
-
     it("Read a basic with a section and 2 simple keys and a comment", function () {
-        var ini = new MultiIni.Class();
-
-        var data = ini.read('test/data/single.ini')
+        var data = MultiIni.read('test/data/single.ini')
 
         expect(data).not.toBeNull();
 
@@ -32,8 +25,7 @@ describe("Basic testing includes reading of different files", function () {
     });
 
     it("Read a basic with a section with multi line values", function () {
-        var ini = new MultiIni.Class();
-        var data = ini.read('test/data/multi_line.ini');
+        var data = MultiIni.read('test/data/multi_line.ini');
 
         expect(data).not.toBeNull();
 
@@ -53,8 +45,7 @@ describe("Basic testing includes reading of different files", function () {
     });
 
     it("Read a basic with a section with multi level keys and single and multi line values", function () {
-        var ini = new MultiIni.Class();
-        var data = ini.read('test/data/multi_level_line.ini');
+        var data = MultiIni.read('test/data/multi_level_line.ini');
 
         expect(data).not.toBeNull();
 
@@ -92,8 +83,7 @@ describe("Basic testing includes reading of different files", function () {
     });
 
     it("Read ini with array definitions", function () {
-        var ini = new MultiIni.Class();
-        var data = ini.read('test/data/array.ini');
+        var data = MultiIni.read('test/data/array.ini');
 
         expect(data).not.toBeNull();
         expect(data['section1']).toBeDefined();
@@ -123,8 +113,7 @@ describe("Basic testing includes reading of different files", function () {
             }
         };
 
-        var ini = new MultiIni.Class();
-        ini.write('test/out/single.ini', data);
+        MultiIni.write('test/out/single.ini', data);
 
         var content = fs.readFileSync('test/out/single.ini', {encoding: 'utf8'});
         var expectedContent = fs.readFileSync('test/data/result/single.ini', {encoding: 'utf8'});
@@ -145,8 +134,7 @@ describe("Basic testing includes reading of different files", function () {
             }
         };
 
-        var ini = new MultiIni.Class();
-        ini.write('test/out/multi_level.ini', data);
+        MultiIni.write('test/out/multi_level.ini', data);
 
         var content = fs.readFileSync('test/out/multi_level.ini', {encoding: 'utf8'});
         var expectedContent = fs.readFileSync('test/data/result/multi_level.ini', {encoding: 'utf8'});
@@ -165,8 +153,7 @@ describe("Basic testing includes reading of different files", function () {
             }
         };
 
-        var ini = new MultiIni.Class();
-        ini.write('test/out/array.ini', data);
+        MultiIni.write('test/out/array.ini', data);
 
         var content = fs.readFileSync('test/out/array.ini', {encoding: 'utf8'});
         var expectedContent = fs.readFileSync('test/data/result/array.ini', {encoding: 'utf8'});
@@ -190,8 +177,7 @@ describe("Basic testing includes reading of different files", function () {
             }
         };
 
-        var ini = new MultiIni.Class();
-        ini.write('test/out/multi_line.ini', data);
+        MultiIni.write('test/out/multi_line.ini', data);
 
         var content = fs.readFileSync('test/out/multi_line.ini', {encoding: 'utf8'});
         var expectedContent = fs.readFileSync('test/data/result/multi_line.ini', {encoding: 'utf8'});
@@ -211,8 +197,7 @@ describe("Basic testing includes reading of different files", function () {
             }
         };
 
-        var ini = new MultiIni.Class();
-        ini.write('test/out/all.ini', data);
+        MultiIni.write('test/out/all.ini', data);
 
         var content = fs.readFileSync('test/out/all.ini', {encoding: 'utf8'});
         var expectedContent = fs.readFileSync('test/data/result/all.ini', {encoding: 'utf8'});
@@ -220,79 +205,8 @@ describe("Basic testing includes reading of different files", function () {
         expect(content).toBe(expectedContent);
     });
 
-    it("Write a ascii ini file and write it manuel", function () {
-        var ini = new MultiIni.Class({encoding: 'ascii'});
-        var data = {
-            section: {
-                key: "Straße mit Häusern"
-            }
-        };
-
-        ini.write('test/out/ascii.ini', data);
-        fs.writeFileSync('test/out/ascii_serialized.ini', ini.serialize(data), {encoding: 'ascii'});
-
-
-        var content = fs.readFileSync('test/out/ascii.ini', {encoding: 'ascii'});
-        var expectedContent = fs.readFileSync('test/out/ascii_serialized.ini', {encoding: 'ascii'});
-
-        expect(content).toBe(expectedContent);
-    });
-
-//    it("Compare both reading results, via ini and manuel", function () {
-//        var data = {
-//            section: {
-//                key: "Straße mit Häusern"
-//            }
-//        };
-//
-//        MultiIni.write('test/out/ascii_read_write.ini', data, {encoding: 'ascii'});
-//
-//        var content = MultiIni.read('test/out/ascii_read_write.ini', {encoding: 'ascii'});
-//
-//        expect(content.section.key).toBe(data.section.key);
-//    });
-
-//    it("Read a file with an invalid lines ignoring it", function () {
-//        var data = MultiIni.read('test/data/invalid_line.ini')
-//
-//        expect(data).not.toBeNull();
-//
-//        expect(data['section']).toBeDefined();
-//
-//        expect(data['section']['valid']).toBe('valid');
-//
-//        expect(data['section']['invalid']).not.toBeDefined();
-//
-//        expect(data['section']['invalid_multiline']).not.toBeDefined();
-//    });
-//
-//    it("Read a file with an invalid lines reading it", function () {
-//        var data = MultiIni.read('test/data/invalid_line.ini', {ignore_invalid: false})
-//
-//        expect(data).not.toBeNull();
-//
-//        expect(data['section']).toBeDefined();
-//
-//        expect(data['section']['valid']).toBe('valid');
-//
-//        expect(data['section']['invalid']).toBe('invalid');
-//
-//        expect(data['section']['invalid_multiline']).toBe('line1\nline2\nline3');
-//    });
-//
-//    it("Read a file with an invalid with invalid callback and abort", function () {
-//        var cb = function (line) {
-//            expect(line).toBe('invalid="invalid"a')
-//            return false
-//        };
-//        var data = MultiIni.read('test/data/invalid_line.ini', {ignore_invalid: false, oninvalid: cb})
-//
-//        expect(data).toBeUndefined();
-//    });
-
     it("Read a basic file with a section and 2 simple keys and one multiline with keep quotes", function () {
-        var ini = new MultiIni.Class({keep_quotes: true});
-        var data = ini.read('test/data/combined_keep_quotes.ini');
+        var data = MultiIni.read('test/data/combined_keep_quotes.ini', {keep_quotes: true});
 
         expect(data).not.toBeNull();
 
@@ -306,8 +220,7 @@ describe("Basic testing includes reading of different files", function () {
     });
 
     it("Read a basic file with a section and 2 simple keys and one multiline with keep quotes and writing it", function () {
-        var ini = new MultiIni.Class({keep_quotes: true});
-        var data = ini.read('test/data/combined_keep_quotes.ini');
+        var data = MultiIni.read('test/data/combined_keep_quotes.ini', {keep_quotes: true});
 
         MultiIni.write('test/out/combined_keep_quotes.ini', data);
 
@@ -318,8 +231,7 @@ describe("Basic testing includes reading of different files", function () {
     });
 
     it("Read and writing a file with constants", function () {
-        var ini = new MultiIni.Class();
-        var data = ini.read('test/data/constant.ini');
+        var data = MultiIni.read('test/data/constant.ini');
 
         expect(data).not.toBeNull();
 
@@ -335,8 +247,7 @@ describe("Basic testing includes reading of different files", function () {
     });
 
     it("Read and writing a file with constants with keeping quotes", function () {
-        var ini = new MultiIni.Class({keep_quotes: true});
-        var data = ini.read('test/data/constant.ini');
+        var data = MultiIni.read('test/data/constant.ini', {keep_quotes: true});
 
         expect(data).not.toBeNull();
 
@@ -349,5 +260,9 @@ describe("Basic testing includes reading of different files", function () {
         expect(data['section']['key3']).toBe('"Part1" CONSTANT "Part2"');
 
         MultiIni.write('test/out/constant_keep.ini', data);
+    });
+
+    it("Checks for compatibility to pre 0.2.x, 0.1.x and 0.0.x", function () {
+
     });
 });
