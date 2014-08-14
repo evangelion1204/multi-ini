@@ -350,4 +350,16 @@ describe("Basic testing includes reading of different files", function () {
 
         MultiIni.write('test/out/constant_keep.ini', data);
     });
+
+    it("Read a file with a section with values having escaped quotes", function () {
+        var ini = new MultiIni.Class();
+        var data = ini.read('test/data/escaped_quotes.ini');
+
+        MultiIni.write('test/out/escaped_quotes.ini', data);
+
+        var content = fs.readFileSync('test/out/escaped_quotes.ini', {encoding: 'utf8'});
+        var expectedContent = fs.readFileSync('test/data/result/escaped_quotes.ini', {encoding: 'utf8'});
+
+        expect(content).toBe(expectedContent);
+    });
 });

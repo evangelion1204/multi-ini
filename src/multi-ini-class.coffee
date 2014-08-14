@@ -15,6 +15,7 @@ class MultiIni
 #    regExpSimpleSingleLine: /^\s*(.*?)\s*?=\s*?([^"].*?)$/
 #    regExpQuotedSingleLine: /^\s*(.*?)\s*?=\s*?"(.*?)"(.*?)$/
     regExpMultiLine: /^\s*(.*?)\s*?=\s*?"(.*?)$/
+    regExpNotEscapedMultiLineEnd: /^(.*?)\\"$/
     regExpMultiLineEnd: /^(.*?)"$/
     regExpArray: /^(.*?)\[\]$/
 
@@ -52,7 +53,7 @@ class MultiIni
         return not check or (check.length % 2 == 0)
 
     isMultiLineEnd: (line) ->
-        line.match @regExpMultiLineEnd
+        line.match(@regExpMultiLineEnd) and not line.match(@regExpNotEscapedMultiLineEnd)
 
     isArray: (line) ->
         line.match @regExpArray
@@ -114,6 +115,7 @@ class MultiIni
 
     needToBeQuoted: (value) ->
         return false if value.match /^"[\s\S]*?"$/g
+        return true if value.match /^[\s\S]*?\\"$/g
         return false if value.match /^[\s\S]*?"$/g
         return false if value.match /^"[\s\S]*?$/g
 
