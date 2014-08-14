@@ -49,7 +49,9 @@ content = ini.read(file, {keep_quotes: false});
 
 ## Changelog
 
-### 0.3.0
+### 0.4.0
+* Refactoring of the basic implementation to be no longer a singleton
+* Fixed a bug with wrong detected escaped double quotes
 
 ### 0.2.5
 Now correctly reads
