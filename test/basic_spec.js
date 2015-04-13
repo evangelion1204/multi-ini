@@ -10,7 +10,7 @@ describe("Basic testing includes reading of different files", function () {
     it("Read a basic with a section and 2 simple keys and a comment", function () {
         var ini = new MultiIni.Class();
 
-        var data = ini.read('test/data/single.ini')
+        var data = ini.read('test/data/single.ini');
 
         expect(data).not.toBeNull();
 
@@ -50,6 +50,8 @@ describe("Basic testing includes reading of different files", function () {
         expect(data['section1']['key3']).toBe('\nline2\nline3');
 
         expect(data['section1']['key4']).toBe('\nline2\nline3\n');
+
+        expect(data['section1']['key6']).toBe('\nline1\nline2=dummy\n');
     });
 
     it("Read a basic with a section with multi level keys and single and multi line values", function () {
