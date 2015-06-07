@@ -25,6 +25,7 @@ ini.write(file, content);
 Following options are available:
 * encoding \[*'utf8'*\] - directly passed to readFileSync
 * keep_quotes \[*false*\] - does not strip quotes around values
+* filters - predefined *lowercase*, *uppercase*, *trim* 
 
 ### Examples
 
@@ -49,7 +50,33 @@ ini = require('multi-ini');
 content = ini.read(file, {keep_quotes: false});
 ```
 
+#### filters
+
+```js
+MultiIni = require('multi-ini');
+ini = new MultiIni.Class({
+    filters: [MultiIni.filters.lowercase]
+});
+content = ini.read(file);
+```
+
+*Define a custom filter*
+```js
+MultiIni = require('multi-ini');
+ini = new MultiIni.Class({
+    filters: [
+        function (value) {
+            return "Prepend " + value;
+        }
+    ]
+});
+content = ini.read(file);
+```
+
 ## Changelog
+
+### 0.5.0
+* Added support for filters per value
 
 ### 0.4.0
 * Refactoring of the basic implementation to be no longer a singleton

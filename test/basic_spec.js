@@ -29,6 +29,8 @@ describe("Basic testing includes reading of different files", function () {
         expect(data['section1']['key6']).toBe('value6');
 
         expect(data['section1']['key7']).toBe(' value7');
+
+        expect(data['section1']['key8']).toBe('VALUE8');
     });
 
     it("Read a basic with a section with multi line values", function () {
@@ -363,5 +365,43 @@ describe("Basic testing includes reading of different files", function () {
         var expectedContent = fs.readFileSync('test/data/result/escaped_quotes.ini', {encoding: 'utf8'});
 
         expect(content).toBe(expectedContent);
+    });
+
+    it("Apply uppercase filter", function () {
+        var ini = new MultiIni.Class({
+            filters: [MultiIni.filters.uppercase]
+        });
+        var data = ini.read('test/data/single.ini');
+
+        expect(data).not.toBeNull();
+
+        expect(data['section1']).toBeDefined();
+        expect(data['section1']['key1']).toBe('VALUE1');
+        expect(data['section1']['key8']).toBe('VALUE8');
+    });
+
+    it("Apply lowercase filter", function () {
+        var ini = new MultiIni.Class({
+            filters: [MultiIni.filters.lowercase]
+        });
+        var data = ini.read('test/data/single.ini');
+
+        expect(data).not.toBeNull();
+
+        expect(data['section1']).toBeDefined();
+        expect(data['section1']['key1']).toBe('value1');
+        expect(data['section1']['key8']).toBe('value8');
+    });
+
+    it("Apply trim empty lines filter", function () {
+        var ini = new MultiIni.Class({
+            filters: [MultiIni.filters.trim]
+        });
+        var data = ini.read('test/data/multi_line.ini');
+
+        expect(data).not.toBeNull();
+
+        expect(data['section1']).toBeDefined();
+        expect(data['section1']['key4']).toBe('line2\nline3');
     });
 });
