@@ -9,6 +9,8 @@ class MultiIni
         oninvalid: () ->
             return true
 
+        filters: []
+
     regExpSection: /^\s*\[(.*?)\]\s*$/
     regExpComment: /^;.*/
     regExpSingleLine: /^\s*(.*?)\s*?=\s*?(\S.*?)$/
@@ -59,6 +61,8 @@ class MultiIni
         line.match @regExpArray
 
     assignValue: (element, keys, value) ->
+        value = @applyFilter value
+
         current = element
         previous = element
         array = false
@@ -80,6 +84,12 @@ class MultiIni
             previous[key] = value
 
         return element
+
+    applyFilter: (value) ->
+        for filter in @options.filters
+            value = filter(value)
+
+        return value
 
     getKeyValue: (line) ->
         result = line.match @regExpSingleLine
@@ -215,6 +225,16 @@ class MultiIni
 
 module.exports =
     Class: MultiIni
+
+    filters:
+        lowercase: (value) ->
+            return if _.isString(value) then value.toLowerCase() else value
+
+        uppercase: (value) ->
+            return if _.isString(value) then value.toUpperCase() else value
+
+        trim: (value) ->
+            return if _.isString(value) then value.trim() else value
 
     read: (filename, options = {}) ->
         instance = new MultiIni(options)

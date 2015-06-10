@@ -1,6 +1,6 @@
 {
   "name": "multi-ini",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "An ini-file parser which supports multi line, multiple levels and arrays to get a maximum of compatibility with Zend config files.",
   "main": "lib/multi-ini-class.js",
   "scripts": {
