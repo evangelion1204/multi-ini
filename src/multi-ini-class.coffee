@@ -11,6 +11,8 @@ class MultiIni
 
         filters: []
 
+    handlers: []
+
     regExpSection: /^\s*\[(.*?)\]\s*$/
     regExpComment: /^;.*/
     regExpSingleLine: /^\s*(.*?)\s*?=\s*?(\S.*?)$/
@@ -26,6 +28,16 @@ class MultiIni
 
     constructor: (options = {}) ->
         @options = _.extend(_.clone(@default), options)
+
+        @handlers = [
+            @handleMultiLineStart,
+            @handleMultiLineEnd,
+            @handleMultiLineAppend,
+            @handleComment,
+            @handleSection,
+            @handleSingleLine
+        ]
+
 
     isSection: (line) ->
         line.match @regExpSection
@@ -163,19 +175,10 @@ class MultiIni
             multiLineKeys: false
             multiLineValue: ''
 
-        handlers = [
-            @handleMultiLineStart,
-            @handleMultiLineEnd,
-            @handleMultiLineAppend,
-            @handleComment,
-            @handleSection,
-            @handleSingleLine
-        ]
-
         for line in lines
             line = line.trim()
 
-            for handler in handlers
+            for handler in @handlers
                 stop = handler.call(this, ctx, line)
 
                 break if stop
@@ -257,6 +260,7 @@ class MultiIni
 
     write: (filename, content = {}) ->
         fs.writeFileSync(filename, @serialize(content), @options)
+
 
 module.exports =
     Class: MultiIni
