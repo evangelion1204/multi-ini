@@ -163,7 +163,14 @@ class MultiIni
             multiLineKeys: false
             multiLineValue: ''
 
-        handlers = [@handleMultiLine, @handleComment, @handleSection, @handleSingleLine]
+        handlers = [
+            @handleMultiLineStart,
+            @handleMultiLineEnd,
+            @handleMultiLineAppend,
+            @handleComment,
+            @handleSection,
+            @handleSingleLine
+        ]
 
         for line in lines
             line = line.trim()
@@ -175,44 +182,46 @@ class MultiIni
 
         return ctx.ini
 
-    handleMultiLine: (ctx, line) ->
-        if @isMultiLine(line)
-            [key, value] = @getMultiKeyValue(line)
-            keys = key.split('.')
+    handleMultiLineStart: (ctx, line) ->
+        return false unless @isMultiLine(line)
 
-            ctx.multiLineKeys = keys
-            ctx.multiLineValue = value
+        [key, value] = @getMultiKeyValue(line)
+        keys = key.split('.')
+
+        ctx.multiLineKeys = keys
+        ctx.multiLineValue = value
+
+        return true
+
+    handleMultiLineEnd: (ctx, line) ->
+        return false if not ctx.multiLineKeys or not @isMultiLineEnd(line)
+
+        [value, status] = @getMultiLineEndValue(line)
+
+        # abort on false of onerror callback if we meet an invalid line
+        return if status == @STATUS_INVALID and not @options.oninvalid(line)
+
+        # ignore whole multiline on invalid
+        if (status == @STATUS_INVALID and @options.ignore_invalid)
+            ctx.multiLineKeys = false
+            ctx.multiLineValue = ""
 
             return true
 
-        else if ctx.multiLineKeys
-            if @isMultiLineEnd(line)
-                [value, status] = @getMultiLineEndValue(line)
+        ctx.multiLineValue += '\n' + value
 
-                # abort on false of onerror callback if we meet an invalid line
-                return if status == @STATUS_INVALID and not @options.oninvalid(line)
+        @assignValue(ctx.current, ctx.multiLineKeys, ctx.multiLineValue)
 
-                # ignore whole multiline on invalid
-                if (status == @STATUS_INVALID and @options.ignore_invalid)
-                    ctx.multiLineKeys = false
-                    ctx.multiLineValue = ""
+        ctx.multiLineKeys = false
+        ctx.multiLineValue = ""
 
-                    return true
+        return true
 
-                ctx.multiLineValue += '\n' + value
+    handleMultiLineAppend: (ctx, line) ->
+        return false if not ctx.multiLineKeys or @isMultiLineEnd(line)
 
-                @assignValue(ctx.current, ctx.multiLineKeys, ctx.multiLineValue)
-
-                ctx.multiLineKeys = false
-                ctx.multiLineValue = ""
-
-                return true
-
-            else
-                ctx.multiLineValue += '\n' + line
-                return true
-
-        return false
+        ctx.multiLineValue += '\n' + line
+        return true
 
     handleComment: (ctx, line) ->
         return @isComment(line)
