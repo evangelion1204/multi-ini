@@ -157,68 +157,94 @@ class MultiIni
 
     read: (filename = {}) ->
         lines = @fetchLines(filename)
-        ini = {}
-        current = ini
-        multiLineKeys = false
-        multiLineValue = ''
+        ctx =
+            ini: {}
+            current: {}
+            multiLineKeys: false
+            multiLineValue: ''
+
+        handlers = [@handleMultiLine, @handleComment, @handleSection, @handleSingleLine]
 
         for line in lines
             line = line.trim()
 
-            if @isMultiLine(line)
-                [key, value] = @getMultiKeyValue(line)
-                keys = key.split('.')
+            for handler in handlers
+                stop = handler.call(this, ctx, line)
 
-                multiLineKeys = keys
-                multiLineValue = value
+                break if stop
 
-            else if multiLineKeys
-                if @isMultiLineEnd(line)
-                    [value, status] = @getMultiLineEndValue(line)
+        return ctx.ini
 
-                    # abort on false of onerror callback if we meet an invalid line
-                    return if status == @STATUS_INVALID and not @options.oninvalid(line)
+    handleMultiLine: (ctx, line) ->
+        if @isMultiLine(line)
+            [key, value] = @getMultiKeyValue(line)
+            keys = key.split('.')
 
-                    # ignore whole multiline on invalid
-                    if (status == @STATUS_INVALID and @options.ignore_invalid)
-                        multiLineKeys = false
-                        multiLineValue = ""
+            ctx.multiLineKeys = keys
+            ctx.multiLineValue = value
 
-                        continue
+            return true
 
-                    multiLineValue += '\n' + value
-
-                    @assignValue(current, multiLineKeys, multiLineValue)
-
-                    multiLineKeys = false
-                    multiLineValue = ""
-
-                else
-                    multiLineValue += '\n' + line
-
-            else if @isComment(line)
-            else if @isSection(line)
-                section = @getSection(line)
-
-                if typeof ini[section] == 'undefined'
-                  ini[section] = {}
-
-                current = ini[section]
-
-            else if @isSingleLine(line)
-                [key, value, status] = @getKeyValue(line)
+        else if ctx.multiLineKeys
+            if @isMultiLineEnd(line)
+                [value, status] = @getMultiLineEndValue(line)
 
                 # abort on false of onerror callback if we meet an invalid line
                 return if status == @STATUS_INVALID and not @options.oninvalid(line)
 
-                # skip entry
-                if status == @STATUS_INVALID and @options.ignore_invalid
-                  continue
+                # ignore whole multiline on invalid
+                if (status == @STATUS_INVALID and @options.ignore_invalid)
+                    ctx.multiLineKeys = false
+                    ctx.multiLineValue = ""
 
-                keys = key.split('.')
-                @assignValue(current, keys, value)
+                    return true
 
-        return ini
+                ctx.multiLineValue += '\n' + value
+
+                @assignValue(ctx.current, ctx.multiLineKeys, ctx.multiLineValue)
+
+                ctx.multiLineKeys = false
+                ctx.multiLineValue = ""
+
+                return true
+
+            else
+                ctx.multiLineValue += '\n' + line
+                return true
+
+        return false
+
+    handleComment: (ctx, line) ->
+        return @isComment(line)
+
+    handleSection: (ctx, line) ->
+        return false unless @isSection(line)
+        section = @getSection(line)
+
+        if typeof ctx.ini[section] == 'undefined'
+            ctx.ini[section] = {}
+
+        ctx.current = ctx.ini[section]
+
+        return true
+
+    handleSingleLine: (ctx, line) ->
+        return false unless @isSingleLine(line)
+
+        [key, value, status] = @getKeyValue(line)
+
+        # abort on false of onerror callback if we meet an invalid line
+        throw new Error('Abort') if status == @STATUS_INVALID and not @options.oninvalid(line)
+
+        # skip entry
+        return true if status == @STATUS_INVALID and not @options.ignore_invalid
+
+
+        keys = key.split('.')
+        @assignValue(ctx.current, keys, value)
+
+        return true
+
 
     write: (filename, content = {}) ->
         fs.writeFileSync(filename, @serialize(content), @options)
