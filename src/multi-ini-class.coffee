@@ -1,23 +1,12 @@
 fs = require 'fs'
 _  = require 'lodash'
 
-class MultiIni
-    default:
-        encoding: 'utf8'
-        ignore_invalid: true
-        keep_quotes: false
-        oninvalid: () ->
-            return true
-
-        filters: []
-
+class Parser
     handlers: []
 
     regExpSection: /^\s*\[(.*?)\]\s*$/
     regExpComment: /^;.*/
     regExpSingleLine: /^\s*(.*?)\s*?=\s*?(\S.*?)$/
-#    regExpSimpleSingleLine: /^\s*(.*?)\s*?=\s*?([^"].*?)$/
-#    regExpQuotedSingleLine: /^\s*(.*?)\s*?=\s*?"(.*?)"(.*?)$/
     regExpMultiLine: /^\s*(.*?)\s*?=\s*?"(.*?)$/
     regExpNotEscapedMultiLineEnd: /^(.*?)\\"$/
     regExpMultiLineEnd: /^(.*?)"$/
@@ -26,8 +15,9 @@ class MultiIni
     STATUS_OK: 0
     STATUS_INVALID: 1
 
+
     constructor: (options = {}) ->
-        @options = _.extend(_.clone(@default), options)
+        @options = options
 
         @handlers = [
             @handleMultiLineStart,
@@ -38,6 +28,22 @@ class MultiIni
             @handleSingleLine
         ]
 
+    parse: (lines) ->
+        ctx =
+            ini: {}
+            current: {}
+            multiLineKeys: false
+            multiLineValue: ''
+
+        for line in lines
+            line = line.trim()
+
+            for handler in @handlers
+                stop = handler.call(this, ctx, line)
+
+                break if stop
+
+        return ctx.ini
 
     isSection: (line) ->
         line.match @regExpSection
@@ -131,61 +137,7 @@ class MultiIni
         result = line.match @regExpArray
         return result[1]
 
-    fetchLines: (filename) ->
-        content = fs.readFileSync(filename, @options)
-        return content.split '\n'
-
-    needToBeQuoted: (value) ->
-        return false if value.match /^"[\s\S]*?"$/g
-        return true if value.match /^[\s\S]*?\\"$/g
-        return false if value.match /^[\s\S]*?"$/g
-        return false if value.match /^"[\s\S]*?$/g
-
-        return true
-
-    serializeContent: (content, path) ->
-        serialized = ''
-        for key, subContent of content
-            if _.isArray(subContent)
-                for value in subContent
-                    value = "\"" + value + "\"" if @needToBeQuoted(value)
-
-                    serialized += path + (if path.length > 0 then '.' else '') + key + "[]=" + value + "\n"
-            else if _.isObject(subContent)
-                serialized += @serializeContent(subContent, path + (if path.length > 0 then '.' else '') + key)
-            else
-                subContent = "\"" + subContent + "\"" if @needToBeQuoted(subContent)
-                serialized += path + (if path.length>0 then '.' else '') + key + "=" + subContent + "\n"
-
-        return serialized
-
-    serialize: (data) ->
-        out = ""
-        for section, sectionContent of data
-            out += "[" + section + "]\n"
-            out += @serializeContent(sectionContent, '')
-
-        return out
-
-    read: (filename = {}) ->
-        lines = @fetchLines(filename)
-        ctx =
-            ini: {}
-            current: {}
-            multiLineKeys: false
-            multiLineValue: ''
-
-        for line in lines
-            line = line.trim()
-
-            for handler in @handlers
-                stop = handler.call(this, ctx, line)
-
-                break if stop
-
-        return ctx.ini
-
-    handleMultiLineStart: (ctx, line) ->
+        handleMultiLineStart: (ctx, line) ->
         return false unless @isMultiLine(line)
 
         [key, value] = @getMultiKeyValue(line)
@@ -257,6 +209,68 @@ class MultiIni
 
         return true
 
+
+class Serializer
+    constructor: (options = {}) ->
+        @options = options
+
+
+class MultiIni
+    default:
+        encoding: 'utf8'
+        ignore_invalid: true
+        keep_quotes: false
+        oninvalid: () ->
+            return true
+
+        filters: []
+
+    constructor: (options = {}) ->
+        @options = _.extend(_.clone(@default), options)
+
+        @parser = new Parser(@options)
+
+
+    fetchLines: (filename) ->
+        content = fs.readFileSync(filename, @options)
+        return content.split '\n'
+
+    needToBeQuoted: (value) ->
+        return false if value.match /^"[\s\S]*?"$/g
+        return true if value.match /^[\s\S]*?\\"$/g
+        return false if value.match /^[\s\S]*?"$/g
+        return false if value.match /^"[\s\S]*?$/g
+
+        return true
+
+    serializeContent: (content, path) ->
+        serialized = ''
+        for key, subContent of content
+            if _.isArray(subContent)
+                for value in subContent
+                    value = "\"" + value + "\"" if @needToBeQuoted(value)
+
+                    serialized += path + (if path.length > 0 then '.' else '') + key + "[]=" + value + "\n"
+            else if _.isObject(subContent)
+                serialized += @serializeContent(subContent, path + (if path.length > 0 then '.' else '') + key)
+            else
+                subContent = "\"" + subContent + "\"" if @needToBeQuoted(subContent)
+                serialized += path + (if path.length>0 then '.' else '') + key + "=" + subContent + "\n"
+
+        return serialized
+
+    serialize: (data) ->
+        out = ""
+        for section, sectionContent of data
+            out += "[" + section + "]\n"
+            out += @serializeContent(sectionContent, '')
+
+        return out
+
+    read: (filename = {}) ->
+        lines = @fetchLines(filename)
+
+        return @parser.parse(lines)
 
     write: (filename, content = {}) ->
         fs.writeFileSync(filename, @serialize(content), @options)
