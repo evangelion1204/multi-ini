@@ -1,4 +1,5 @@
 test/out/*.ini
+coverage/
 node_modules/
 .idea/
 .travis.yml
