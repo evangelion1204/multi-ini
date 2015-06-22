@@ -4,7 +4,7 @@
   "description": "An ini-file parser which supports multi line, multiple levels and arrays to get a maximum of compatibility with Zend config files.",
   "main": "lib/multi-ini-class.js",
   "scripts": {
-    "test": "grunt jasmine_node"
+    "test": "grunt test"
   },
   "homepage": "https://github.com/evangelion1204/multi-ini",
   "author": {
@@ -32,12 +32,15 @@
     "multi-level"
   ],
   "devDependencies": {
-    "lodash": "^2.4.1",
-    "grunt": "^0.4.2",
-    "grunt-contrib-jasmine": "^0.6.1",
-    "grunt-contrib-coffee": "^0.10.1",
+    "grunt": "^0.4.5",
     "grunt-contrib-clean": "^0.5.0",
-    "grunt-jasmine-node": "^0.1.0"
+    "grunt-contrib-coffee": "^0.10.1",
+    "grunt-contrib-jasmine": "^0.6.1",
+    "grunt-coveralls": "^1.0.0",
+    "grunt-jasmine-node": "^0.1.0",
+    "grunt-jasmine-node-coverage": "^0.4.1",
+    "jasmine-core": "^2.3.4",
+    "lodash": "^2.4.1"
   },
   "dependencies": {
     "lodash": "^2.4.1"
