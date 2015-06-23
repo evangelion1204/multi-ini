@@ -2,7 +2,7 @@ fs = require 'fs'
 _  = require 'lodash'
 
 class Parser
-    handlers: []
+#    handlers: []
 
     regExpSection: /^\s*\[(.*?)\]\s*$/
     regExpComment: /^;.*/
@@ -137,7 +137,7 @@ class Parser
         result = line.match @regExpArray
         return result[1]
 
-        handleMultiLineStart: (ctx, line) ->
+    handleMultiLineStart: (ctx, line) ->
         return false unless @isMultiLine(line)
 
         [key, value] = @getMultiKeyValue(line)
