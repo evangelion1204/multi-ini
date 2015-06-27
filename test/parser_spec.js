@@ -48,4 +48,27 @@ describe("Testing parser", function () {
         });
     });
 
+    describe("handleSection", function () {
+        var instance = new Parser({keep_quotes: true});
+        it("Same section appears twice", function () {
+            var ctx = {ini: {}};
+
+            instance.handleSection(ctx, "[multi]");
+            instance.handleSection(ctx, "[another]");
+            instance.handleSection(ctx, "[multi]");
+
+            expect(ctx.ini.multi).toBeDefined();
+            expect(ctx.ini.another).toBeDefined();
+            expect(ctx.current).toBe(ctx.ini.multi);
+        });
+    });
+
+    describe("handleSingleLine", function () {
+        var instance = new Parser({keep_quotes: true});
+
+        it("", function () {
+
+        });
+    });
+
 });
