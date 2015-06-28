@@ -36,7 +36,7 @@ module.exports = (grunt) ->
                 forceExit: true,
                 captureExceptions: true,
                 specFolders: ['tests'],
-                src: ['**/*.js']
+                src: ['lib/*.js']
                 junitreport:
                     report: false,
                     savePath : "./build/reports/jasmine/",

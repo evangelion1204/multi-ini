@@ -163,9 +163,9 @@ class MultiIni
         multiLineValue = ''
 
         for line in lines
-            line = line.trim()
+            trimmedLine = line.trim()
 
-            if @isMultiLine(line)
+            if @isMultiLine(trimmedLine)
                 [key, value] = @getMultiKeyValue(line)
                 keys = key.split('.')
 
@@ -173,7 +173,7 @@ class MultiIni
                 multiLineValue = value
 
             else if multiLineKeys
-                if @isMultiLineEnd(line)
+                if @isMultiLineEnd(trimmedLine)
                     [value, status] = @getMultiLineEndValue(line)
 
                     # abort on false of onerror callback if we meet an invalid line
@@ -196,20 +196,20 @@ class MultiIni
                 else
                     multiLineValue += '\n' + line
 
-            else if @isComment(line)
-            else if @isSection(line)
-                section = @getSection(line)
+            else if @isComment(trimmedLine)
+            else if @isSection(trimmedLine)
+                section = @getSection(trimmedLine)
 
                 if typeof ini[section] == 'undefined'
                   ini[section] = {}
 
                 current = ini[section]
 
-            else if @isSingleLine(line)
-                [key, value, status] = @getKeyValue(line)
+            else if @isSingleLine(trimmedLine)
+                [key, value, status] = @getKeyValue(trimmedLine)
 
                 # abort on false of onerror callback if we meet an invalid line
-                return if status == @STATUS_INVALID and not @options.oninvalid(line)
+                return if status == @STATUS_INVALID and not @options.oninvalid(trimmedLine)
 
                 # skip entry
                 if status == @STATUS_INVALID and @options.ignore_invalid
