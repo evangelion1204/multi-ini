@@ -54,6 +54,8 @@ describe("Basic testing includes reading of different files", function () {
         expect(data['section1']['key4']).toBe('\nline2\nline3\n');
 
         expect(data['section1']['key6']).toBe('\nline1\nline2=dummy\n');
+
+        expect(data['section1']['key7']).toBe('line1\n  line2\n    line3');
     });
 
     it("Read a basic with a section with multi level keys and single and multi line values", function () {

@@ -24,7 +24,6 @@ class MultiIni
 
         @parser = new Parser(@options)
 
-
     fetchLines: (filename) ->
         content = fs.readFileSync(filename, @options)
         return content.split '\n'
@@ -64,7 +63,7 @@ class MultiIni
     read: (filename = {}) ->
         lines = @fetchLines(filename)
 
-        return @parser.parse(lines)
+        return @parser.parse(lines)        
 
     write: (filename, content = {}) ->
         fs.writeFileSync(filename, @serialize(content), @options)

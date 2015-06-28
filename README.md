@@ -75,6 +75,9 @@ content = ini.read(file);
 
 ## Changelog
 
+### 0.5.1
+* Fixed a bug where single lines of multilines got trimmed
+
 ### 0.5.0
 * Added support for filters per value
 
