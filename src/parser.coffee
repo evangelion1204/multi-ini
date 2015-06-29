@@ -33,8 +33,6 @@ class Parser
             multiLineValue: ''
 
         for line in lines
-            line = line.trim()
-
             for handler in @handlers
                 stop = handler.call(this, ctx, line)
 
@@ -139,7 +137,7 @@ class Parser
         return result[1]
 
     handleMultiLineStart: (ctx, line) ->
-        return false unless @isMultiLine(line)
+        return false unless @isMultiLine(line.trim())
 
         [key, value] = @getMultiKeyValue(line)
         keys = key.split('.')
@@ -150,7 +148,7 @@ class Parser
         return true
 
     handleMultiLineEnd: (ctx, line) ->
-        return false if not ctx.multiLineKeys or not @isMultiLineEnd(line)
+        return false if not ctx.multiLineKeys or not @isMultiLineEnd(line.trim())
 
         [value, status] = @getMultiLineEndValue(line)
 
@@ -174,15 +172,16 @@ class Parser
         return true
 
     handleMultiLineAppend: (ctx, line) ->
-        return false if not ctx.multiLineKeys or @isMultiLineEnd(line)
+        return false if not ctx.multiLineKeys or @isMultiLineEnd(line.trim())
 
         ctx.multiLineValue += '\n' + line
         return true
 
     handleComment: (ctx, line) ->
-        return @isComment(line)
+        return @isComment(line.trim())
 
     handleSection: (ctx, line) ->
+        line = line.trim()
         return false unless @isSection(line)
         section = @getSection(line)
 
@@ -194,6 +193,7 @@ class Parser
         return true
 
     handleSingleLine: (ctx, line) ->
+        line = line.trim()
         return false unless @isSingleLine(line)
 
         [key, value, status] = @getKeyValue(line)
