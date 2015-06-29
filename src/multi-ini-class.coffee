@@ -2,12 +2,7 @@ fs = require 'fs'
 _  = require 'lodash'
 
 Parser = require './parser'
-
-
-class Serializer
-    constructor: (options = {}) ->
-        @options = options
-
+Serializer = require './serializer'
 
 class MultiIni
     default:
@@ -23,51 +18,27 @@ class MultiIni
         @options = _.extend(_.clone(@default), options)
 
         @parser = new Parser(@options)
+        @serializer = new Serializer(@options)
+
+    read: (filename = {}) ->
+        lines = @fetchLines(filename)
+
+        return @parser.parse(lines)
 
     fetchLines: (filename) ->
         content = fs.readFileSync(filename, @options)
         return content.split '\n'
 
-    needToBeQuoted: (value) ->
-        return false if value.match /^"[\s\S]*?"$/g
-        return true if value.match /^[\s\S]*?\\"$/g
-        return false if value.match /^[\s\S]*?"$/g
-        return false if value.match /^"[\s\S]*?$/g
-
-        return true
-
-    serializeContent: (content, path) ->
-        serialized = ''
-        for key, subContent of content
-            if _.isArray(subContent)
-                for value in subContent
-                    value = "\"" + value + "\"" if @needToBeQuoted(value)
-
-                    serialized += path + (if path.length > 0 then '.' else '') + key + "[]=" + value + "\n"
-            else if _.isObject(subContent)
-                serialized += @serializeContent(subContent, path + (if path.length > 0 then '.' else '') + key)
-            else
-                subContent = "\"" + subContent + "\"" if @needToBeQuoted(subContent)
-                serialized += path + (if path.length>0 then '.' else '') + key + "=" + subContent + "\n"
-
-        return serialized
+    write: (filename, content = {}) ->
+        fs.writeFileSync(filename, @serialize(content), @options)
 
     serialize: (data) ->
         out = ""
         for section, sectionContent of data
             out += "[" + section + "]\n"
-            out += @serializeContent(sectionContent, '')
+            out += @serializer.serializeContent(sectionContent, '')
 
         return out
-
-    read: (filename = {}) ->
-        lines = @fetchLines(filename)
-
-        return @parser.parse(lines)        
-
-    write: (filename, content = {}) ->
-        fs.writeFileSync(filename, @serialize(content), @options)
-
 
 module.exports =
     Class: MultiIni
