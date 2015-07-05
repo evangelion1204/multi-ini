@@ -406,4 +406,10 @@ describe("Basic testing includes reading of different files", function () {
         expect(data['section1']).toBeDefined();
         expect(data['section1']['key4']).toBe('line2\nline3');
     });
+
+    it("Read multi line ini of issue #12", function () {
+        var data = MultiIni.read('test/data/issue_12.ini');
+
+        expect(data['(U+Pu) métal H2O']['description']).toBe('(U+Pu) métal modération H2O\nParamétrage de la modération en H/(U+Pu)');
+    });
 });
