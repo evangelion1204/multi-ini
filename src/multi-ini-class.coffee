@@ -20,7 +20,9 @@ class MultiIni
         @parser = new Parser(@options)
         @serializer = new Serializer(@options)
 
-    read: (filename = {}) ->
+    read: (filename) ->
+        throw new Error('Missing filename.') unless filename
+
         lines = @fetchLines(filename)
 
         return @parser.parse(lines)
