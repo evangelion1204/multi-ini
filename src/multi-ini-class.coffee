@@ -10,6 +10,7 @@ class MultiIni
             return true
 
         filters: []
+        line_breaks: 'unix'
 
     regExpSection: /^\s*\[(.*?)\]\s*$/
     regExpComment: /^;.*/
@@ -20,6 +21,10 @@ class MultiIni
     regExpNotEscapedMultiLineEnd: /^(.*?)\\"$/
     regExpMultiLineEnd: /^(.*?)"$/
     regExpArray: /^(.*?)\[\]$/
+
+    line_breaks:
+        unix: '\n'
+        windows: '\r\n'
 
     STATUS_OK: 0
     STATUS_INVALID: 1
@@ -121,7 +126,7 @@ class MultiIni
 
     fetchLines: (filename) ->
         content = fs.readFileSync(filename, @options)
-        return content.split '\n'
+        return content.split @line_breaks[@options.line_breaks]
 
     needToBeQuoted: (value) ->
         return false if value.match /^"[\s\S]*?"$/g
@@ -138,19 +143,19 @@ class MultiIni
                 for value in subContent
                     value = "\"" + value + "\"" if @needToBeQuoted(value)
 
-                    serialized += path + (if path.length > 0 then '.' else '') + key + "[]=" + value + "\n"
+                    serialized += path + (if path.length > 0 then '.' else '') + key + "[]=" + value + @line_breaks[@options.line_breaks]
             else if _.isObject(subContent)
                 serialized += @serializeContent(subContent, path + (if path.length > 0 then '.' else '') + key)
             else
                 subContent = "\"" + subContent + "\"" if @needToBeQuoted(subContent)
-                serialized += path + (if path.length>0 then '.' else '') + key + "=" + subContent + "\n"
+                serialized += path + (if path.length>0 then '.' else '') + key + "=" + subContent + @line_breaks[@options.line_breaks]
 
         return serialized
 
     serialize: (data) ->
         out = ""
         for section, sectionContent of data
-            out += "[" + section + "]\n"
+            out += "[" + section + "]" + @line_breaks[@options.line_breaks]
             out += @serializeContent(sectionContent, '')
 
         return out

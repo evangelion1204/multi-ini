@@ -261,8 +261,4 @@ describe("Basic testing with backward compatibility to pre 0.3.x", function () {
 
         MultiIni.write('test/out/constant_keep.ini', data);
     });
-
-    it("Checks for compatibility to pre 0.2.x, 0.1.x and 0.0.x", function () {
-
-    });
 });
