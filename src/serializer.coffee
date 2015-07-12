@@ -1,6 +1,11 @@
 _ = require 'lodash'
+constants = require './constants'
 
 class Serializer
+    line_breaks:
+        unix: '\n'
+        windows: '\r\n'
+
     constructor: (options = {}) ->
         @options = options
 
@@ -19,12 +24,12 @@ class Serializer
                 for value in subContent
                     value = "\"" + value + "\"" if @needToBeQuoted(value)
 
-                    serialized += path + (if path.length > 0 then '.' else '') + key + "[]=" + value + "\n"
+                    serialized += path + (if path.length > 0 then '.' else '') + key + "[]=" + value + constants.line_breaks[@options.line_breaks]
             else if _.isObject(subContent)
                 serialized += @serializeContent(subContent, path + (if path.length > 0 then '.' else '') + key)
             else
                 subContent = "\"" + subContent + "\"" if @needToBeQuoted(subContent)
-                serialized += path + (if path.length>0 then '.' else '') + key + "=" + subContent + "\n"
+                serialized += path + (if path.length>0 then '.' else '') + key + "=" + subContent + constants.line_breaks[@options.line_breaks]
 
         return serialized
 
