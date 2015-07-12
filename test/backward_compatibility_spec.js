@@ -1,6 +1,6 @@
 describe("Basic testing with backward compatibility to pre 0.3.x", function () {
     var fs = require('fs');
-    var MultiIni = require('../lib/multi-ini-class.js');
+    var MultiIni = require('../lib');
 
     it("Read a basic with a section and 2 simple keys and a comment", function () {
         var data = MultiIni.read('test/data/single.ini')
