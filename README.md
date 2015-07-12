@@ -73,7 +73,20 @@ ini = new MultiIni.Class({
 content = ini.read(file);
 ```
 
+#### line_breaks
+
+Either `unix` or `windows` for line breaks.
+
+```js
+ini = require('multi-ini');
+content = ini.read(file, {line_breaks: 'windows'});
+content.section.key = value;
+```
+
 ## Changelog
+
+### 0.5.2
+* Introduced option for line breaks
 
 ### 0.5.1
 * Fixed a bug where single lines of multilines got trimmed

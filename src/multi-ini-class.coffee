@@ -13,6 +13,7 @@ class MultiIni
             return true
 
         filters: []
+        line_breaks: 'unix'
 
     constructor: (options = {}) ->
         @options = _.extend(_.clone(@default), options)
@@ -29,7 +30,7 @@ class MultiIni
 
     fetchLines: (filename) ->
         content = fs.readFileSync(filename, @options)
-        return content.split '\n'
+        return content.split @line_breaks[@options.line_breaks]
 
     write: (filename, content = {}) ->
         fs.writeFileSync(filename, @serialize(content), @options)
