@@ -1,6 +1,6 @@
 describe("Basic testing includes reading of different files", function () {
     var fs = require('fs');
-    var MultiIni = require('../lib/multi-ini-class');
+    var MultiIni = require('../lib');
     var Serializer = require('../lib/serializer');
 
     it("Availability of the class ", function () {
