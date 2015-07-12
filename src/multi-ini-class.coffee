@@ -3,7 +3,7 @@ _  = require 'lodash'
 
 Parser = require './parser'
 Serializer = require './serializer'
-constants = require './constants'
+Constants = require './constants'
 
 class MultiIni
     default:
@@ -31,18 +31,11 @@ class MultiIni
 
     fetchLines: (filename) ->
         content = fs.readFileSync(filename, @options)
-        return content.split constants.line_breaks[@options.line_breaks]
+        return content.split Constants.line_breaks[@options.line_breaks]
 
     write: (filename, content = {}) ->
-        fs.writeFileSync(filename, @serialize(content), @options)
-
-    serialize: (data) ->
-        out = ""
-        for section, sectionContent of data
-            out += "[" + section + "]" + constants.line_breaks[@options.line_breaks]
-            out += @serializer.serializeContent(sectionContent, '')
-
-        return out
+        fs.writeFileSync(filename, @serializer.serialize(content), @options)
+        return
 
 module.exports =
     Class: MultiIni

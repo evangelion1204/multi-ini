@@ -1,6 +1,4 @@
 class Parser
-    #    handlers: []
-
     regExpSection: /^\s*\[(.*?)\]\s*$/
     regExpComment: /^;.*/
     regExpSingleLine: /^\s*(.*?)\s*?=\s*?(\S.*?)$/
