@@ -3,7 +3,7 @@ describe("Basic testing with backward compatibility to pre 0.3.x", function () {
     var MultiIni = require('../lib');
 
     it("Read a basic with a section and 2 simple keys and a comment", function () {
-        var data = MultiIni.read('test/data/single.ini')
+        var data = MultiIni.read('test/data/single.ini');
 
         expect(data).not.toBeNull();
 
