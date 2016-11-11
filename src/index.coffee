@@ -28,9 +28,6 @@ module.exports =
               matcher = new RegExp("^#{constant} \"", 'g')
               value = value.replace(matcher, "\"#{replacement}")
 
-            console.log options.constants
-            console.log value
-
             return value
 
     read: (filename, options = {}) ->
