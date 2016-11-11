@@ -1,6 +1,7 @@
 describe("Basic testing includes reading of different files", function () {
     var fs = require('fs');
-    var MultiIni = require('../lib/multi-ini-class.js');
+    var MultiIni = require('../lib');
+    var Serializer = require('../lib/serializer');
 
     it("Availability of the class ", function () {
         expect(MultiIni).not.toBeUndefined();
@@ -228,6 +229,8 @@ describe("Basic testing includes reading of different files", function () {
 
     it("Write a ascii ini file and write it manuel", function () {
         var ini = new MultiIni.Class({encoding: 'ascii'});
+        var serializer = new Serializer({encoding: 'ascii', line_breaks: 'unix'});
+
         var data = {
             section: {
                 key: "Straße mit Häusern"
@@ -235,8 +238,7 @@ describe("Basic testing includes reading of different files", function () {
         };
 
         ini.write('test/out/ascii.ini', data);
-        fs.writeFileSync('test/out/ascii_serialized.ini', ini.serialize(data), {encoding: 'ascii'});
-
+        fs.writeFileSync('test/out/ascii_serialized.ini', serializer.serialize(data), {encoding: 'ascii'});
 
         var content = fs.readFileSync('test/out/ascii.ini', {encoding: 'ascii'});
         var expectedContent = fs.readFileSync('test/out/ascii_serialized.ini', {encoding: 'ascii'});
@@ -331,9 +333,9 @@ describe("Basic testing includes reading of different files", function () {
 
         expect(data['section']).toBeDefined();
 
-        expect(data['section']['key1']).toBe('"Part1" CONSTANT');
+        expect(data['section']['key1']).toBe('"Part1 " CONSTANT');
 
-        expect(data['section']['key2']).toBe('CONSTANT "Part2"');
+        expect(data['section']['key2']).toBe('CONSTANT " Part2"');
 
         expect(data['section']['key3']).toBe('Part1" CONSTANT "Part2');
 
@@ -348,9 +350,9 @@ describe("Basic testing includes reading of different files", function () {
 
         expect(data['section']).toBeDefined();
 
-        expect(data['section']['key1']).toBe('"Part1" CONSTANT');
+        expect(data['section']['key1']).toBe('"Part1 " CONSTANT');
 
-        expect(data['section']['key2']).toBe('CONSTANT "Part2"');
+        expect(data['section']['key2']).toBe('CONSTANT " Part2"');
 
         expect(data['section']['key3']).toBe('"Part1" CONSTANT "Part2"');
 
