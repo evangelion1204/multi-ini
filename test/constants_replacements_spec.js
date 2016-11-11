@@ -2,7 +2,10 @@ describe("Constants replacement in ini files", function () {
     var MultiIni = require('../lib');
 
     it("Default replacement if constant found", function () {
-        var ini = new MultiIni.Class({constants: {'CONSTANT': 'replacement'}});
+        var ini = new MultiIni.Class({
+          constants: {'CONSTANT': 'replacement'},
+          filters: [MultiIni.filters.constants]
+        });
 
         var data = ini.read('test/data/constant.ini');
 

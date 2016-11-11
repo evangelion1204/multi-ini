@@ -15,6 +15,24 @@ module.exports =
         trim: (value) ->
             return if _.isString(value) then value.trim() else value
 
+        constants: (value, options) ->
+            return value unless _.isString(value) or _.isEmpty(options.constants)
+
+            _.forIn options.constants, (replacement, constant) ->
+              matcher = new RegExp("\" #{constant} \"", 'g')
+              value = value.replace(matcher, "#{replacement}")
+
+              matcher = new RegExp("\" #{constant}$", 'g')
+              value = value.replace(matcher, "#{replacement}\"")
+
+              matcher = new RegExp("^#{constant} \"", 'g')
+              value = value.replace(matcher, "\"#{replacement}")
+
+            console.log options.constants
+            console.log value
+
+            return value
+
     read: (filename, options = {}) ->
         instance = new MultiIni(options)
         return instance.read(filename)

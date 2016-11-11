@@ -333,9 +333,9 @@ describe("Basic testing includes reading of different files", function () {
 
         expect(data['section']).toBeDefined();
 
-        expect(data['section']['key1']).toBe('"Part1" CONSTANT');
+        expect(data['section']['key1']).toBe('"Part1 " CONSTANT');
 
-        expect(data['section']['key2']).toBe('CONSTANT "Part2"');
+        expect(data['section']['key2']).toBe('CONSTANT " Part2"');
 
         expect(data['section']['key3']).toBe('Part1" CONSTANT "Part2');
 
@@ -350,9 +350,9 @@ describe("Basic testing includes reading of different files", function () {
 
         expect(data['section']).toBeDefined();
 
-        expect(data['section']['key1']).toBe('"Part1" CONSTANT');
+        expect(data['section']['key1']).toBe('"Part1 " CONSTANT');
 
-        expect(data['section']['key2']).toBe('CONSTANT "Part2"');
+        expect(data['section']['key2']).toBe('CONSTANT " Part2"');
 
         expect(data['section']['key3']).toBe('"Part1" CONSTANT "Part2"');
 
