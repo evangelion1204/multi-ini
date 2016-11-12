@@ -3,7 +3,7 @@ describe("Basic testing with backward compatibility to pre 0.3.x", function () {
     var MultiIni = require('../lib');
 
     it("Read a basic with a section and 2 simple keys and a comment", function () {
-        var data = MultiIni.read('test/data/single.ini')
+        var data = MultiIni.read('test/data/single.ini');
 
         expect(data).not.toBeNull();
 
@@ -237,9 +237,9 @@ describe("Basic testing with backward compatibility to pre 0.3.x", function () {
 
         expect(data['section']).toBeDefined();
 
-        expect(data['section']['key1']).toBe('"Part1" CONSTANT');
+        expect(data['section']['key1']).toBe('"Part1 " CONSTANT');
 
-        expect(data['section']['key2']).toBe('CONSTANT "Part2"');
+        expect(data['section']['key2']).toBe('CONSTANT " Part2"');
 
         expect(data['section']['key3']).toBe('Part1" CONSTANT "Part2');
 
@@ -253,9 +253,9 @@ describe("Basic testing with backward compatibility to pre 0.3.x", function () {
 
         expect(data['section']).toBeDefined();
 
-        expect(data['section']['key1']).toBe('"Part1" CONSTANT');
+        expect(data['section']['key1']).toBe('"Part1 " CONSTANT');
 
-        expect(data['section']['key2']).toBe('CONSTANT "Part2"');
+        expect(data['section']['key2']).toBe('CONSTANT " Part2"');
 
         expect(data['section']['key3']).toBe('"Part1" CONSTANT "Part2"');
 

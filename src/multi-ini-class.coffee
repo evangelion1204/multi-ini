@@ -15,6 +15,7 @@ class MultiIni
 
         filters: []
         line_breaks: 'unix'
+        constants: {}
 
     constructor: (options = {}) ->
         @options = _.extend(_.clone(@default), options)

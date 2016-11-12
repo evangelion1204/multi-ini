@@ -98,7 +98,7 @@ class Parser
 
     applyFilter: (value) ->
         for filter in @options.filters
-            value = filter(value)
+            value = filter(value, @options)
 
         return value
 
@@ -201,7 +201,6 @@ class Parser
 
         # skip entry
         return true if status == @STATUS_INVALID and not @options.ignore_invalid
-
 
         keys = key.split('.')
         @assignValue(ctx.current, keys, value)
