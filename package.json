@@ -41,6 +41,7 @@
     "babel-plugin-transform-es2015-arrow-functions": "^6.4.0",
     "babel-plugin-transform-es2015-block-scoping": "^6.3.13",
     "babel-plugin-transform-es2015-classes": "^6.3.15",
+    "babel-plugin-transform-es2015-destructuring": "^6.18.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.3.16",
     "babel-plugin-transform-es2015-parameters": "^6.3.26",
     "babel-plugin-transform-es2015-template-literals": "^6.3.13",
