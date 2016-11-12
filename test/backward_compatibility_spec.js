@@ -7,7 +7,7 @@ chai.use(sinonChai)
 
 describe("Basic testing with backward compatibility to pre 0.3.x", function () {
     var fs = require('fs');
-    var MultiIni = require('../lib');
+    var MultiIni = require('../src');
 
     it("Read a basic with a section and 2 simple keys and a comment", function () {
         var data = MultiIni.read('test/data/single.ini');

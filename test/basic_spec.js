@@ -7,8 +7,8 @@ chai.use(sinonChai)
 
 describe("Basic testing includes reading of different files", function () {
     var fs = require('fs');
-    var MultiIni = require('../lib');
-    var Serializer = require('../lib/serializer');
+    var MultiIni = require('../src');
+    var Serializer = require('../src/serializer');
 
     it("Availability of the class ", function () {
         expect(MultiIni).not.to.be.undefined;

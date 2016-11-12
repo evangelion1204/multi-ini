@@ -6,7 +6,7 @@ const expect = chai.expect
 chai.use(sinonChai)
 
 describe("Testing parser", function () {
-    var Parser = require('../lib/parser.js');
+    var Parser = require('../src/parser');
 
     it("Availability of the class", function () {
         expect(Parser).not.to.be.undefined;

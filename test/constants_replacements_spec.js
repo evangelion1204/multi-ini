@@ -6,7 +6,7 @@ const expect = chai.expect
 chai.use(sinonChai)
 
 describe("Constants replacement in ini files", function () {
-    var MultiIni = require('../lib');
+    var MultiIni = require('../src');
 
     it("Default replacement if constant found", function () {
         var ini = new MultiIni.Class({
