@@ -1,3 +1,10 @@
+const chai = require('chai')
+const sinon = require('sinon')
+const sinonChai = require('sinon-chai')
+const expect = chai.expect
+
+chai.use(sinonChai)
+
 describe("Constants replacement in ini files", function () {
     var MultiIni = require('../lib');
 
@@ -9,14 +16,14 @@ describe("Constants replacement in ini files", function () {
 
         var data = ini.read('test/data/constant.ini');
 
-        expect(data).not.toBeNull();
+        expect(data).not.to.be.null;
 
-        expect(data['section']).toBeDefined();
+        expect(data['section']).to.be.defined;
 
-        expect(data['section']['key1']).toBe('"Part1 replacement"');
+        expect(data['section']['key1']).to.equal('"Part1 replacement"');
 
-        expect(data['section']['key2']).toBe('"replacement Part2"');
+        expect(data['section']['key2']).to.equal('"replacement Part2"');
 
-        expect(data['section']['key3']).toBe('Part1replacementPart2');
+        expect(data['section']['key3']).to.equal('Part1replacementPart2');
     });
 });

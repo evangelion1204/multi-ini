@@ -1,15 +1,22 @@
+const chai = require('chai')
+const sinon = require('sinon')
+const sinonChai = require('sinon-chai')
+const expect = chai.expect
+
+chai.use(sinonChai)
+
 describe("Testing parser", function () {
     var Parser = require('../lib/parser.js');
 
     it("Availability of the class", function () {
-        expect(Parser).not.toBeUndefined();
-        expect(Parser).not.toBeNull();
+        expect(Parser).not.to.be.undefined;
+        expect(Parser).not.to.be.null;
     });
 
     it("Instantiate with default params", function () {
         var instance = new Parser();
 
-        expect(instance).not.toBeNull();
+        expect(instance).not.to.be.null;
     });
 
     describe("getKeyValue", function () {
@@ -20,7 +27,7 @@ describe("Testing parser", function () {
                 instance.getKeyValue("key");
             };
 
-            expect(wrapper).toThrow();
+            expect(wrapper).to.throw;
         });
     });
 
@@ -32,7 +39,7 @@ describe("Testing parser", function () {
                 instance.getMultiKeyValue("")
             };
 
-            expect(wrapper).toThrow();
+            expect(wrapper).to.throw;
         });
     });
 
@@ -44,7 +51,7 @@ describe("Testing parser", function () {
                 instance.getMultiLineEndValue("")
             };
 
-            expect(wrapper).toThrow();
+            expect(wrapper).to.throw;
         });
     });
 
@@ -57,9 +64,9 @@ describe("Testing parser", function () {
             instance.handleSection(ctx, "[another]");
             instance.handleSection(ctx, "[multi]");
 
-            expect(ctx.ini.multi).toBeDefined();
-            expect(ctx.ini.another).toBeDefined();
-            expect(ctx.current).toBe(ctx.ini.multi);
+            expect(ctx.ini.multi).to.be.defined;
+            expect(ctx.ini.another).to.be.defined;
+            expect(ctx.current).to.equal(ctx.ini.multi);
         });
     });
 
