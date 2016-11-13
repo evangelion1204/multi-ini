@@ -25,7 +25,7 @@ ini.write(file, content);
 Following options are available:
 * encoding \[*'utf8'*\] - directly passed to readFileSync
 * keep_quotes \[*false*\] - does not strip quotes around values
-* filters - predefined *lowercase*, *uppercase*, *trim* 
+* filters - predefined *lowercase*, *uppercase*, *trim*, *constants*
 
 ### Examples
 
@@ -81,6 +81,30 @@ Either `unix` or `windows` for line breaks.
 ini = require('multi-ini');
 content = ini.read(file, {line_breaks: 'windows'});
 content.section.key = value;
+```
+
+#### Parser
+
+It's also possible to parse a ini file from an array of strings.
+
+```js
+ini = require('multi-ini');
+parser = new ini.Parser();
+content = parser.parse(lines);
+```
+
+#### Serializer
+
+Like parsing it's also possible to serialize an ini object to a string.
+
+```js
+ini = require('multi-ini');
+serializer = new ini.Serializer();
+content = serializer.serialize({
+    production: {
+        base_url: 'https://google.com'
+    }
+});
 ```
 
 ## Changelog
