@@ -6,7 +6,7 @@
   "scripts": {
     "predistribute": "babel src --out-dir lib",
     "test": "babel-node ./node_modules/.bin/_mocha",
-    "coverage": "babel-node ./node_modules/.bin/isparta cover _mocha",
+    "coverage": "babel-node ./node_modules/.bin/istanbul cover _mocha",
     "distribute": "npm publish"
   },
   "homepage": "https://github.com/evangelion1204/multi-ini",
