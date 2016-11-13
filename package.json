@@ -6,8 +6,7 @@
   "scripts": {
     "predistribute": "babel src --out-dir lib",
     "test": "babel-node ./node_modules/.bin/_mocha",
-    "coverage": "babel-node ./node_modules/.bin/isparta cover ./node_modules/.bin/_mocha",
-    "bench": "babel-node --harmony benchmark/joined.js",
+    "coverage": "babel-node ./node_modules/.bin/isparta cover _mocha",
     "distribute": "npm publish"
   },
   "homepage": "https://github.com/evangelion1204/multi-ini",
@@ -25,7 +24,7 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/evangelion1204/grunt-lock/blob/master/LICENSE"
+      "url": "https://github.com/evangelion1204/multi-ini/blob/master/LICENSE"
     }
   ],
   "keywords": [
@@ -46,9 +45,10 @@
     "babel-plugin-transform-es2015-modules-commonjs": "^6.3.16",
     "babel-plugin-transform-es2015-parameters": "^6.3.26",
     "babel-plugin-transform-es2015-template-literals": "^6.3.13",
+    "babel-register": "^6.18.0",
     "benchmark": "^2.0.0",
     "chai": "^3.4.1",
-    "isparta": "^4.0.0",
+    "istanbul": "^1.1.0-alpha.1",
     "mocha": "^2.3.4",
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0"

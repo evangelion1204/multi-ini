@@ -1,3 +1,5 @@
+'use strict';
+
 const REGEXP_SECTION = /^\s*\[(.*?)\]\s*$/;
 const REGEXP_COMMENT = /^;.*/;
 const REGEXP_SINGLE_LINE = /^\s*(.*?)\s*?=\s*?(\S.*?)$/;
