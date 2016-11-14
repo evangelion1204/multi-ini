@@ -3,9 +3,14 @@
 const _ = require('lodash');
 const Constants = require('./constants');
 
+const defaults = {
+    line_breaks: 'unix',
+};
+
+
 class Serializer {
     constructor(options = {}) {
-        this.options = options
+        this.options = Object.assign({}, defaults, options);
     }
 
     needToBeQuoted(value) {

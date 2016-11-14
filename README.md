@@ -109,6 +109,9 @@ content = serializer.serialize({
 
 ## Changelog
 
+### 1.0.0
+* First full release keeping backwards compatibility
+
 ### 0.5.2
 * Introduced option for line breaks
 

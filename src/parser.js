@@ -11,9 +11,17 @@ const REGEXP_ARRAY = /^(.*?)\[\]$/;
 const STATUS_OK = 0;
 const STATUS_INVALID = 1;
 
+const defaults = {
+    ignore_invalid: true,
+    keep_quotes: false,
+    oninvalid: () => true,
+    filters: [],
+    constants: {},
+};
+
 class Parser {
     constructor(options = {}) {
-        this.options = options;
+        this.options = Object.assign({}, defaults, options);
 
         this.handlers = [
             this.handleMultiLineStart,
