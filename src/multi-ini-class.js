@@ -9,17 +9,12 @@ const Constants = require('./constants');
 
 const defaults = {
     encoding: 'utf8',
-    ignore_invalid: true,
-    keep_quotes: false,
-    oninvalid: () => true,
-    filters: [],
     line_breaks: 'unix',
-    constants: {},
 };
 
 class MultiIni {
     constructor(options = {}) {
-        this.options = _.extend(_.clone(defaults), options);
+        this.options = Object.assign({}, defaults, options);
 
         this.parser = new Parser(this.options);
         this.serializer = new Serializer(this.options);
