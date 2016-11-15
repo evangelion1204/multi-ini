@@ -2,5 +2,6 @@ test/out/*.ini
 coverage/
 node_modules/
 .idea/
+.git/
 .travis.yml
 lib/.keepme
