@@ -2,3 +2,5 @@ coverage/
 node_modules/
 .idea/
 test/out/*.ini
+lib/*.js
+lib/**/*.js
