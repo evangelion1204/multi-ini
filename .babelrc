@@ -12,6 +12,7 @@
     "babel-plugin-transform-es2015-arrow-functions",
     "babel-plugin-transform-es2015-destructuring",
     "babel-plugin-transform-es2015-for-of",
-    "babel-plugin-transform-object-rest-spread"
+    "babel-plugin-transform-object-rest-spread",
+    "babel-plugin-transform-es2015-shorthand-properties"
   ]
 }

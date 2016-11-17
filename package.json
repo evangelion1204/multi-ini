@@ -44,6 +44,7 @@
     "babel-plugin-transform-es2015-for-of": "^6.18.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.3.16",
     "babel-plugin-transform-es2015-parameters": "^6.3.26",
+    "babel-plugin-transform-es2015-shorthand-properties": "^6.18.0",
     "babel-plugin-transform-es2015-template-literals": "^6.3.13",
     "babel-plugin-transform-object-rest-spread": "^6.19.0",
     "babel-register": "^6.18.0",
