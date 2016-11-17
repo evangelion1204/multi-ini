@@ -11,6 +11,7 @@
     "babel-plugin-transform-es2015-template-literals",
     "babel-plugin-transform-es2015-arrow-functions",
     "babel-plugin-transform-es2015-destructuring",
-    "babel-plugin-transform-es2015-for-of"
+    "babel-plugin-transform-es2015-for-of",
+    "babel-plugin-transform-object-rest-spread"
   ]
 }
