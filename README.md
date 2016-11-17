@@ -60,6 +60,17 @@ ini = new MultiIni.Class({
 content = ini.read(file);
 ```
 
+*Replacing constants*
+```js
+MultiIni = require('multi-ini');
+ini = new MultiIni.Class({
+  constants: {'CONSTANT': 'replacement'},
+  filters: [MultiIni.filters.constants]
+});
+content = ini.read(file);
+```
+
+
 *Define a custom filter*
 ```js
 MultiIni = require('multi-ini');
