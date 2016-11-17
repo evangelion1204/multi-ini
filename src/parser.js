@@ -145,11 +145,13 @@ class Parser {
             throw new Error();
         }
 
+        let [, key, value] = result;
+
         if (!this.options.keep_quotes) {
-            result[2] = result[2].replace(/^\s*?"(.*?)"\s*?$/, "$1");
+            value = value.replace(/^\s*?"(.*?)"\s*?$/, "$1");
         }
 
-        return [result[1], result[2], STATUS_OK];
+        return {key, value, status: STATUS_OK};
     }
 
     getMultiKeyValue(line) {
@@ -159,11 +161,13 @@ class Parser {
             throw new Error();
         }
 
+        let [, key, value] = result;
+
         if (this.options.keep_quotes) {
-            result[2] = '"' + result[2];
+            value = '"' + value;
         }
 
-        return [result[1], result[2]];
+        return {key, value};
     }
 
     getMultiLineEndValue(line) {
@@ -173,11 +177,13 @@ class Parser {
             throw new Error();
         }
 
+        let [, value] = result;
+
         if (this.options.keep_quotes) {
-            result[1] = result[1] + '"';
+            value = value + '"';
         }
 
-        return [result[1], STATUS_OK];
+        return {value, status: STATUS_OK};
     }
 
     getArrayKey(line) {
@@ -191,7 +197,7 @@ class Parser {
             return false;
         }
 
-        const [key, value] = this.getMultiKeyValue(line);
+        const {key, value} = this.getMultiKeyValue(line);
         const keys = key.split('.');
 
         ctx.multiLineKeys = keys;
@@ -205,7 +211,7 @@ class Parser {
             return false;
         }
 
-        const [value, status] = this.getMultiLineEndValue(line);
+        const {value, status} = this.getMultiLineEndValue(line);
 
         // abort on false of onerror callback if we meet an invalid line
         if (status === STATUS_INVALID && !this.options.oninvalid(line)) {
@@ -269,7 +275,7 @@ class Parser {
             return false;
         }
 
-        const [key, value, status] = this.getKeyValue(line);
+        const {key, value, status} = this.getKeyValue(line);
 
         // abort on false of onerror callback if we meet an invalid line
         if (status === STATUS_INVALID && !this.options.oninvalid(line)) {
