@@ -13,6 +13,7 @@
     "babel-plugin-transform-es2015-destructuring",
     "babel-plugin-transform-es2015-for-of",
     "babel-plugin-transform-object-rest-spread",
-    "babel-plugin-transform-es2015-shorthand-properties"
+    "babel-plugin-transform-es2015-shorthand-properties",
+    "babel-plugin-transform-object-assign"
   ]
 }
