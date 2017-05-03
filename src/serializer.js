@@ -5,6 +5,7 @@ const Constants = require('./constants');
 
 const defaults = {
     line_breaks: 'unix',
+    keep_quotes: false,
 };
 
 
@@ -14,14 +15,21 @@ class Serializer {
     }
 
     needToBeQuoted(value) {
+        if (this.options.keep_quotes) {
+            return false;
+        }
+
+        // wrapped with qoutes
         if (value.match(/^"[\s\S]*?"$/g)) {
             return false;
         }
 
+        // escaped quote at the end
         if (value.match(/^[\s\S]*?\\"$/g)) {
             return true;
         }
 
+        // ends or starts with a quote
         if (value.match(/^[\s\S]*?"$/g) || value.match(/^"[\s\S]*?$/g)) {
             return false;
         }

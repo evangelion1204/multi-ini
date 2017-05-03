@@ -43,4 +43,4 @@ class MultiIni {
     }
 }
 
-module.exports = MultiIni
+module.exports = MultiIni;

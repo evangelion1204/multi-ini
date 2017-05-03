@@ -1,11 +1,11 @@
 'use strict';
 
-const chai = require('chai')
-const sinon = require('sinon')
-const sinonChai = require('sinon-chai')
-const expect = chai.expect
+const chai = require('chai');
+const sinon = require('sinon');
+const sinonChai = require('sinon-chai');
+const expect = chai.expect;
 
-chai.use(sinonChai)
+chai.use(sinonChai);
 
 describe("Basic testing includes reading of different files", function () {
     var fs = require('fs');
@@ -326,7 +326,7 @@ describe("Basic testing includes reading of different files", function () {
         var ini = new MultiIni.Class({keep_quotes: true});
         var data = ini.read('test/data/combined_keep_quotes.ini');
 
-        MultiIni.write('test/out/combined_keep_quotes.ini', data);
+        ini.write('test/out/combined_keep_quotes.ini', data);
 
         var content = fs.readFileSync('test/out/combined_keep_quotes.ini', {encoding: 'utf8'});
         var expectedContent = fs.readFileSync('test/data/result/combined_keep_quotes.ini', {encoding: 'utf8'});
@@ -348,7 +348,7 @@ describe("Basic testing includes reading of different files", function () {
 
         expect(data['section']['key3']).to.equal('Part1" CONSTANT "Part2');
 
-        MultiIni.write('test/out/constant.ini', data);
+        ini.write('test/out/constant.ini', data);
     });
 
     it("Read and writing a file with constants with keeping quotes", function () {
@@ -365,14 +365,14 @@ describe("Basic testing includes reading of different files", function () {
 
         expect(data['section']['key3']).to.equal('"Part1" CONSTANT "Part2"');
 
-        MultiIni.write('test/out/constant_keep.ini', data);
+        ini.write('test/out/constant_keep.ini', data);
     });
 
     it("Read a file with a section with values having escaped quotes", function () {
         var ini = new MultiIni.Class();
         var data = ini.read('test/data/escaped_quotes.ini');
 
-        MultiIni.write('test/out/escaped_quotes.ini', data);
+        ini.write('test/out/escaped_quotes.ini', data);
 
         var content = fs.readFileSync('test/out/escaped_quotes.ini', {encoding: 'utf8'});
         var expectedContent = fs.readFileSync('test/data/result/escaped_quotes.ini', {encoding: 'utf8'});
@@ -384,6 +384,7 @@ describe("Basic testing includes reading of different files", function () {
         var ini = new MultiIni.Class({
             filters: [MultiIni.filters.uppercase]
         });
+
         var data = ini.read('test/data/single.ini');
 
         expect(data).not.to.be.null;
@@ -419,7 +420,7 @@ describe("Basic testing includes reading of different files", function () {
     });
 
     it("Read multi line ini of issue #12 with windows line breaks", function () {
-        var instance = new MultiIni.Class({line_breaks: 'windows'})
+        var instance = new MultiIni.Class({line_breaks: 'windows'});
         var data = instance.read('test/data/issue_12.ini');
 
         expect(data['(U+Pu) métal H2O']['description']).to.equal('(U+Pu) métal modération H2O\nParamétrage de la modération en H/(U+Pu)');
