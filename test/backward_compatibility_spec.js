@@ -1,11 +1,11 @@
 'use strict';
 
-const chai = require('chai')
-const sinon = require('sinon')
-const sinonChai = require('sinon-chai')
-const expect = chai.expect
+const chai = require('chai');
+const sinon = require('sinon');
+const sinonChai = require('sinon-chai');
+const expect = chai.expect;
 
-chai.use(sinonChai)
+chai.use(sinonChai);
 
 describe("Basic testing with backward compatibility to pre 0.3.x", function () {
     var fs = require('fs');
@@ -231,7 +231,7 @@ describe("Basic testing with backward compatibility to pre 0.3.x", function () {
     it("Read a basic file with a section and 2 simple keys and one multiline with keep quotes and writing it", function () {
         var data = MultiIni.read('test/data/combined_keep_quotes.ini', {keep_quotes: true});
 
-        MultiIni.write('test/out/combined_keep_quotes.ini', data);
+        MultiIni.write('test/out/combined_keep_quotes.ini', data, {keep_quotes: true});
 
         var content = fs.readFileSync('test/out/combined_keep_quotes.ini', {encoding: 'utf8'});
         var expectedContent = fs.readFileSync('test/data/result/combined_keep_quotes.ini', {encoding: 'utf8'});

@@ -47,7 +47,24 @@ Enabling this option will result in **"value"** instead of **value**.
 
 ```js
 ini = require('multi-ini');
-content = ini.read(file, {keep_quotes: false});
+content = ini.read(file, {keep_quotes: true});
+```
+
+This will also affect the Serializer and serialized values. Using it will not quote anything automatically.
+```js
+{
+    production: {
+        quoted: '"quoted"',
+        not_quoted: 'not_quoted'
+    }
+}
+```
+
+Will result in a ini like
+```ini
+[production]
+quoted="quoted"
+not_quotes=not_quoted
 ```
 
 #### filters
