@@ -137,6 +137,9 @@ content = serializer.serialize({
 
 ## Changelog
 
+### 1.0.1
+* Fixed bug with `keep_quotes` ignored when writing files
+
 ### 1.0.0
 * First full release keeping backwards compatibility
 
