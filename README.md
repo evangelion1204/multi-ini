@@ -25,7 +25,7 @@ ini.write(file, content);
 Following options are available:
 * encoding \[*'utf8'*\] - directly passed to readFileSync
 * keep_quotes \[*false*\] - does not strip quotes around values
-* filters - predefined *lowercase*, *uppercase*, *trim*, *constants*
+* filters - predefined *lowercase*, *uppercase*, *trim*, *constants*, *boolean*
 
 ### Examples
 

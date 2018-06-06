@@ -32,3 +32,23 @@ export function constants(value, options) {
 
     return value;
 }
+
+export function boolean(value) {
+    if (!_.isString(value) || value.length > 5) {
+        return value;
+    }
+
+    switch (value.toLowerCase()) {
+        case 'on':
+        case 'yes':
+        case 'true':
+            return true;
+        case 'off':
+        case 'no':
+        case 'none':
+        case 'false':
+            return false;
+        default:
+            return value;
+    }
+}

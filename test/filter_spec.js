@@ -75,4 +75,34 @@ describe("Filters", function () {
         });
     });
 
+    describe("boolean", function () {
+        it("is available", function () {
+            expect(MultiIni.filters.boolean).to.be.defined;
+        });
+
+        it("string should have replaced booleans", function () {
+            // true
+            expect(MultiIni.filters.boolean('on')).to.equal(true);
+            expect(MultiIni.filters.boolean('On')).to.equal(true);
+            expect(MultiIni.filters.boolean('yes')).to.equal(true);
+            expect(MultiIni.filters.boolean('Yes')).to.equal(true);
+            expect(MultiIni.filters.boolean('true')).to.equal(true);
+            expect(MultiIni.filters.boolean('True')).to.equal(true);
+            expect(MultiIni.filters.boolean('TRUE')).to.equal(true);
+            // false 
+            expect(MultiIni.filters.boolean('off')).to.equal(false);
+            expect(MultiIni.filters.boolean('Off')).to.equal(false);
+            expect(MultiIni.filters.boolean('no')).to.equal(false);
+            expect(MultiIni.filters.boolean('No')).to.equal(false);
+            expect(MultiIni.filters.boolean('false')).to.equal(false);
+            expect(MultiIni.filters.boolean('False')).to.equal(false);
+            expect(MultiIni.filters.boolean('FALSE')).to.equal(false);
+            expect(MultiIni.filters.boolean('none')).to.equal(false);
+        });
+
+        it("anything else then string will be returned unmodified", function () {
+            expect(MultiIni.filters.boolean('test')).to.equal('test');
+            expect(MultiIni.filters.boolean(3)).to.equal(3);
+        });
+    });
 });
