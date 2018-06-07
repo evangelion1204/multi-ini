@@ -1,6 +1,7 @@
 {
   "name": "multi-ini",
   "version": "1.0.1",
+  "license": "MIT",
   "description": "An ini-file parser which supports multi line, multiple levels and arrays to get a maximum of compatibility with Zend config files.",
   "main": "lib/index.js",
   "scripts": {
@@ -52,11 +53,11 @@
     "benchmark": "^2.0.0",
     "chai": "^3.4.1",
     "istanbul": "^1.1.0-alpha.1",
-    "mocha": "^2.3.4",
+    "mocha": "^5.2.0",
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0"
   },
   "dependencies": {
-    "lodash": "^2.4.1"
+    "lodash": "^4.0.0"
   }
 }
