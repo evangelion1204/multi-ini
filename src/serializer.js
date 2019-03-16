@@ -6,6 +6,7 @@ const Constants = require('./constants');
 const defaults = {
     line_breaks: 'unix',
     keep_quotes: false,
+    keep_comments: false,
 };
 
 
@@ -39,20 +40,49 @@ class Serializer {
 
     serialize(content) {
         return _.reduce(content, (output, sectionContent, section) => {
-            output += `[${section}]` + Constants.line_breaks[this.options.line_breaks];
-            output += this.serializeContent(sectionContent, '');
+            if (_.startsWith(section,';')) {
+                for (let i = 0; i < sectionContent.length; ++i)
+                    output += ';' + sectionContent[i] + Constants.line_breaks[this.options.line_breaks];
+            }
+            else {
+                output += `[${section}]` + Constants.line_breaks[this.options.line_breaks];
+                output += this.serializeContent(sectionContent, '');
+            }
             return output;
         }, '');
     }
 
+    getComment(content, path, key, arr_i) {
+      let str = '', cKey = ';' + key;
+
+      if (!content.hasOwnProperty(cKey)) {
+          return str;
+      }
+      const comment = arr_i !== null ? content[cKey][arr_i] : content[cKey];
+
+      if (comment.length > 0) {
+          for (let i = 0; i < comment.length; ++i)
+              str += ';' + comment[i] + Constants.line_breaks[this.options.line_breaks];
+      }
+
+      return str;
+    };
+
     serializeContent(content, path) {
         return _.reduce(content, (serialized, subContent, key) => {
+
             if (_.isArray(subContent)) {
-                for (let value of subContent) {
+                if (_.startsWith(key,';')) {
+                    return serialized;
+                }
+
+                for (let i = 0; i < subContent.length; ++i) {
+                    let value = subContent[i];
                     if (this.needToBeQuoted(value)) {
                         value = `"${value}"`;
                     }
 
+                    serialized += this.getComment(content, path, key, i);
                     serialized += path + (path.length > 0 ? '.' : '') + key + "[]=" + value + Constants.line_breaks[this.options.line_breaks];
                 }
             }
@@ -60,10 +90,16 @@ class Serializer {
                 serialized += this.serializeContent(subContent, path + (path.length > 0 ? '.' : '') + key);
             }
             else {
+
+                if (_.startsWith(key,';')) {
+                    return serialized;
+                }
+
                 if (this.needToBeQuoted(subContent)) {
                     subContent = `"${subContent}"`;
                 }
 
+                serialized += this.getComment(content, path, key, null);
                 serialized += path + (path.length > 0 ? '.' : '') + key + "=" + subContent + Constants.line_breaks[this.options.line_breaks];
             }
 
@@ -71,5 +107,6 @@ class Serializer {
         }, '');
     }
 }
+
 
 module.exports = Serializer;

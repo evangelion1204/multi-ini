@@ -14,6 +14,7 @@ const STATUS_INVALID = 1;
 const defaults = {
     ignore_invalid: true,
     keep_quotes: false,
+    keep_comments: false,
     oninvalid: () => true,
     filters: [],
     constants: {},
@@ -39,6 +40,7 @@ class Parser {
             current: {},
             multiLineKeys: false,
             multiLineValue: '',
+            comments:[],
         }
 
         for (let line of lines) {
@@ -98,18 +100,43 @@ class Parser {
         return line.match(REGEXP_ARRAY);
     }
 
-    assignValue(element, keys, value) {
+    assignValue(ctx, element, keys, value) {
         value = this.applyFilter(value);
 
         let current = element;
         let previous = element;
         let array = false;
-        let key
+        let key;
 
-        for (key of keys) {
+        for (let ki = 0; ki < keys.length; ++ki) {
+            key = keys[ki];
+            const isLast = (ki === (keys.length-1));
+
             if (this.isArray(key)) {
                 key = this.getArrayKey(key);
                 array = true;
+            }
+
+            if (isLast && this.options.keep_comments) {
+                const isUndefined = (typeof current[ ';' + key ] === 'undefined');
+
+                if (ctx.comments.length > 0 || !isUndefined) {
+                    if (array) {
+                        if (isUndefined) {
+                            current[ ';' + key ] = [];
+                            if (current[key] != null) {
+                                while (current[ ';' + key ].length < current[key].length)
+                                    current[ ';' + key ].push([]);
+                            }
+                        }
+                        current[ ';' + key ].push(ctx.comments);
+                    }
+                    else {
+                        current[ ';' + key ] = ctx.comments;
+                    }
+                    ctx.comments = [];
+                }
+
             }
 
             if (current[key] == null) {
@@ -228,7 +255,7 @@ class Parser {
 
         ctx.multiLineValue += '\n' + value;
 
-        this.assignValue(ctx.current, ctx.multiLineKeys, ctx.multiLineValue);
+        this.assignValue(ctx, ctx.current, ctx.multiLineKeys, ctx.multiLineValue);
 
         ctx.multiLineKeys = false;
         ctx.multiLineValue = "";
@@ -247,7 +274,17 @@ class Parser {
     }
 
     handleComment(ctx, line) {
-        return this.isComment(line.trim());
+        if (!this.isComment(line.trim())) {
+            return false;
+        }
+
+        if (!this.options.keep_comments) {
+            return true;
+        }
+
+        ctx.comments.push(line.replace(';', ''));
+
+        return true;
     }
 
     handleSection(ctx, line) {
@@ -258,6 +295,13 @@ class Parser {
         }
 
         const section = this.getSection(line);
+
+        if (this.options.keep_comments) {
+          if (ctx.comments.length > 0) {
+            ctx.ini[ ';' + section ] = ctx.comments;
+            ctx.comments = [];
+          }
+        }
 
         if (typeof ctx.ini[section] === 'undefined') {
             ctx.ini[section] = {};
@@ -289,7 +333,7 @@ class Parser {
 
         const keys = key.split('.');
 
-        this.assignValue(ctx.current, keys, value)
+        this.assignValue(ctx, ctx.current, keys, value)
 
         return true;
     }
