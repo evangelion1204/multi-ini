@@ -25,6 +25,7 @@ ini.write(file, content);
 Following options are available:
 * encoding \[*'utf8'*\] - directly passed to readFileSync
 * keep_quotes \[*false*\] - does not strip quotes around values
+* keep_comments \[*false*\] - preserve comments
 * filters - predefined *lowercase*, *uppercase*, *trim*, *constants*, *boolean*
 
 ### Examples
@@ -66,6 +67,72 @@ Will result in a ini like
 quoted="quoted"
 not_quotes=not_quoted
 ```
+
+#### keep_comments
+
+This options will preserve comments while reading and writing. Comments saved and loaded for each field key with starts `;`.
+
+For example, reading this file:
+```ini
+; section1 comment
+[section1]
+; multi line
+; key1 comment
+key1="value1"
+; key2[0] comment
+key2[]="value2-0"
+; key2[1] comment
+key2[]="value2-1"
+```
+
+With this commands:
+```js
+var MultiIni = require('multi-ini');
+var ini = new MultiIni.Class({
+    keep_comments:true,
+});
+var data = ini.read('read-comment-example.ini');
+console.log(JSON.stringify(data, null, 2));
+```
+
+Will resutl:
+```json
+{
+  ";section1": [ " section1 comment" ],
+  "section1": {
+    ";key1": [ " multi line", " key1 comment" ],
+    "key1": "value1",
+    ";key2": [ [ " key2[0] comment" ], [ " key2[1] comment" ] ],
+    "key2": [ "value2-0", "value2-1" ]
+  }
+}
+```
+
+While writing with below code:
+```js
+var MultiIni = require('multi-ini');
+var ini = new MultiIni.Class({
+    keep_comments:true,
+});
+var data = {
+  ";section1": [ " section1 comment" ],
+  "section1": {
+    ";key1": [ " multi line", " key1 comment" ],
+    "key1": "value1"
+  }
+};
+ini.write('write-comment-example.ini', data);
+```
+
+Will result this ini file:
+```
+; section1 comment
+[section1]
+; multi line
+; key1 comment
+key1="value1"
+```
+
 
 #### filters
 
