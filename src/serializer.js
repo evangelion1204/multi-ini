@@ -40,7 +40,7 @@ class Serializer {
 
     serialize(content) {
         return _.reduce(content, (output, sectionContent, section) => {
-            if (_.startsWith(section,';')) {
+            if (this.options.keep_comments && _.startsWith(section,';')) {
                 for (let i = 0; i < sectionContent.length; ++i)
                     output += ';' + sectionContent[i] + Constants.line_breaks[this.options.line_breaks];
             }
@@ -72,17 +72,20 @@ class Serializer {
         return _.reduce(content, (serialized, subContent, key) => {
 
             if (_.isArray(subContent)) {
-                if (_.startsWith(key,';')) {
+                if (this.options.keep_comments && _.startsWith(key,';')) {
                     return serialized;
                 }
 
                 for (let i = 0; i < subContent.length; ++i) {
                     let value = subContent[i];
+
                     if (this.needToBeQuoted(value)) {
                         value = `"${value}"`;
                     }
 
-                    serialized += this.getComment(content, path, key, i);
+                    if (this.options.keep_comments) {
+                        serialized += this.getComment(content, path, key, i);
+                    }
                     serialized += path + (path.length > 0 ? '.' : '') + key + "[]=" + value + Constants.line_breaks[this.options.line_breaks];
                 }
             }
@@ -91,7 +94,7 @@ class Serializer {
             }
             else {
 
-                if (_.startsWith(key,';')) {
+                if (this.options.keep_comments && _.startsWith(key,';')) {
                     return serialized;
                 }
 
@@ -99,7 +102,9 @@ class Serializer {
                     subContent = `"${subContent}"`;
                 }
 
-                serialized += this.getComment(content, path, key, null);
+                if (this.options.keep_comments) {
+                    serialized += this.getComment(content, path, key, null);
+                }
                 serialized += path + (path.length > 0 ? '.' : '') + key + "=" + subContent + Constants.line_breaks[this.options.line_breaks];
             }
 
