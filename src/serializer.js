@@ -20,6 +20,14 @@ class Serializer {
             return false;
         }
 
+        if (_.isArray(value)) {
+            return false;
+        }
+
+        if (_.isObject(value)) {
+            return false;
+        }
+
         // wrapped with qoutes
         if (value.match(/^"[\s\S]*?"$/g)) {
             return false;
