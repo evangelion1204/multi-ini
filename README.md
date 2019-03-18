@@ -91,36 +91,46 @@ var MultiIni = require('multi-ini');
 var ini = new MultiIni.Class({
     keep_comments:true,
 });
-var data = ini.read('example.ini');
+var data = ini.read('read-comment-example.ini');
 console.log(JSON.stringify(data, null, 2));
 ```
 
 Will resutl:
 ```json
 {
-  ";section1": [
-    " section1 comment"
-  ],
+  ";section1": [ " section1 comment" ],
   "section1": {
-    ";key1": [
-      " multi line",
-      " key1 comment"
-    ],
+    ";key1": [ " multi line", " key1 comment" ],
     "key1": "value1",
-    ";key2": [
-      [
-        " key2[0] comment"
-      ],
-      [
-        " key2[1] comment"
-      ]
-    ],
-    "key2": [
-      "value2-0",
-      "value2-1"
-    ]
+    ";key2": [ [ " key2[0] comment" ], [ " key2[1] comment" ] ],
+    "key2": [ "value2-0", "value2-1" ]
   }
 }
+```
+
+While writing with below code:
+```js
+var MultiIni = require('multi-ini');
+var ini = new MultiIni.Class({
+    keep_comments:true,
+});
+var data = {
+  ";section1": [ " section1 comment" ],
+  "section1": {
+    ";key1": [ " multi line", " key1 comment" ],
+    "key1": "value1"
+  }
+};
+ini.write('write-comment-example.ini', data);
+```
+
+Will result this ini file:
+```
+; section1 comment
+[section1]
+; multi line
+; key1 comment
+key1="value1"
 ```
 
 
