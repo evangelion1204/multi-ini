@@ -82,6 +82,8 @@ describe('Comments', function () {
 
         expect(comments).not.to.be.null;
 
+        comments['section1'][';skipped'] = 'skipped_value';
+
         ini.write('test/out/commented.ini', comments);
 
         const content = fs.readFileSync('test/out/commented.ini', {encoding: 'utf8'});

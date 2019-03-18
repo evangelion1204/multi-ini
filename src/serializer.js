@@ -20,11 +20,7 @@ class Serializer {
             return false;
         }
 
-        if (_.isArray(value)) {
-            return false;
-        }
-
-        if (_.isObject(value)) {
+        if (!_.isString(value)) {
             return false;
         }
 
@@ -91,9 +87,19 @@ class Serializer {
                         value = `"${value}"`;
                     }
 
+                    if (!_.isString(value)) {
+                        if (_.isObject(value)) {
+                            value = JSON.stringify(value);
+                        }
+                        else {
+                            value = _.toString(value);
+                        }
+                    }
+
                     if (this.options.keep_comments) {
                         serialized += this.getComment(content, path, key, i);
                     }
+
                     serialized += path + (path.length > 0 ? '.' : '') + key + "[]=" + value + Constants.line_breaks[this.options.line_breaks];
                 }
             }
@@ -113,6 +119,7 @@ class Serializer {
                 if (this.options.keep_comments) {
                     serialized += this.getComment(content, path, key, null);
                 }
+
                 serialized += path + (path.length > 0 ? '.' : '') + key + "=" + subContent + Constants.line_breaks[this.options.line_breaks];
             }
 

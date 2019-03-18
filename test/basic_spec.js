@@ -425,4 +425,22 @@ describe("Basic testing includes reading of different files", function () {
 
         expect(data['(U+Pu) métal H2O']['description']).to.equal('(U+Pu) métal modération H2O\nParamétrage de la modération en H/(U+Pu)');
     });
+
+    it("Writing value of array", function () {
+        var data = {
+            section1: {
+                key1: [ [], {}, 'a', {'b':'v_b'}, 1]
+            }
+        }
+
+        var ini = new MultiIni.Class();
+
+        ini.write('test/out/value_of_array.ini', data);
+
+        var content = fs.readFileSync('test/out/value_of_array.ini', {encoding: 'utf8'});
+        var expectedContent = fs.readFileSync('test/data/result/value_of_array.ini', {encoding: 'utf8'});
+
+        expect(content).to.equal(expectedContent);
+    });
+
 });
