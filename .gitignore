@@ -5,3 +5,4 @@ test/out/*.ini
 lib/*.js
 lib/**/*.js
 *.log
+package-lock.json
