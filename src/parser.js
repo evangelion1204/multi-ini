@@ -1,6 +1,7 @@
 'use strict';
 
-const REGEXP_SECTION = /^\s*\[(.*?)\]\s*$/;
+const REGEXP_SECTION = /^\s*\[\s*([^:\s]*)\s*:*\s*([^:\s]*)\s*\]\s*$/;
+const REGEXP_SECTION_INHERITED = /^\s*\[\s*([^:\s]*)\s*:+\s*([^:\s]*)\s*\]\s*$/;
 const REGEXP_COMMENT = /^;.*/;
 const REGEXP_SINGLE_LINE = /^\s*(.*?)\s*?=\s*?(\S.*?)$/;
 const REGEXP_MULTI_LINE = /^\s*(.*?)\s*?=\s*?"(.*?)$/;
@@ -60,6 +61,14 @@ class Parser {
 
     getSection(line) {
         return line.match(REGEXP_SECTION)[1]
+    }
+
+    getParentSection(line) {
+        return line.match(REGEXP_SECTION_INHERITED)[2]
+    }
+
+    isInheritedSection(line) {
+        return line.match(REGEXP_SECTION_INHERITED);
     }
 
     isComment(line) {
@@ -258,6 +267,11 @@ class Parser {
         }
 
         const section = this.getSection(line);
+
+        if (this.isInheritedSection(line)) {
+            const parentSection = this.getParentSection(line)
+            ctx.ini[section] = JSON.parse(JSON.stringify(ctx.ini[parentSection]))
+        }
 
         if (typeof ctx.ini[section] === 'undefined') {
             ctx.ini[section] = {};
