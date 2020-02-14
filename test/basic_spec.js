@@ -131,6 +131,19 @@ describe("Basic testing includes reading of different files", function () {
         expect(data['section1']['key3']['subkey'][1]).to.equal('value5');
     });
 
+    it("Read ini with section inheritance", function () {
+        var ini = new MultiIni.Class();
+        var data = ini.read('test/data/section_inheritance.ini');
+
+        expect(data).not.to.be.null;
+        expect(data['section2']).to.be.defined;
+        expect(data['section2']['key1']).to.equal('value1');
+        expect(data['section2']['key2']).to.equal('value2');
+        expect(data['section2']['key3']).to.equal('value3');
+
+    })
+
+
     it("Write ini file with one section and multiple single line values", function () {
         var data = {
             section1: {
