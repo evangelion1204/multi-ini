@@ -270,7 +270,7 @@ class Parser {
 
         if (this.isInheritedSection(line)) {
             const parentSection = this.getParentSection(line)
-            ctx.ini[section] = { ...ctx.ini[parentSection] }
+            ctx.ini[section] = JSON.parse(JSON.stringify(ctx.ini[parentSection]))
         }
 
         if (typeof ctx.ini[section] === 'undefined') {
