@@ -138,9 +138,10 @@ describe("Basic testing includes reading of different files", function () {
         expect(data).not.to.be.null;
         expect(data['section2']).to.be.defined;
         expect(data['section2']['key1']).to.equal('value1');
-        expect(data['section2']['key2']).to.equal('value2');
+        expect(data['section2']['key2']).to.equal('overwritten value2');
         expect(data['section2']['key3']).to.equal('value3');
-
+        expect(data['section2']['key4']['nested']['deeper']).to.equal('value4');
+        expect(data['section2']['key5']['nested']['deeper']).to.equal('overwritten value5');
     })
 
 
