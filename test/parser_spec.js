@@ -70,6 +70,16 @@ describe("Testing parser", function () {
             expect(ctx.ini.another).to.be.defined;
             expect(ctx.current).to.equal(ctx.ini.multi);
         });
+
+        it("Section inherits from other section", function () {
+            var ctx = {ini: {}};
+
+            instance.handleSection(ctx, "[parent]");
+            instance.handleSection(ctx, "[child:parent]");
+
+            expect(ctx.ini.parent).to.be.defined;
+            expect(ctx.ini.child).to.be.defined;
+        });
     });
 
     describe("handleSingleLine", function () {
