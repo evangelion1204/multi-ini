@@ -1,7 +1,7 @@
 'use strict';
 
-const REGEXP_SECTION = /^\s*\[\s*([^:\s]*)\s*:*\s*([^:\s]*)\s*\]\s*$/;
-const REGEXP_SECTION_INHERITED = /^\s*\[\s*([^:\s]*)\s*:+\s*([^:\s]*)\s*\]\s*$/;
+// match1 - section, match2 - optional full inheritance  part, match3 - inherited section
+const REGEXP_SECTION = /^\s*\[\s*([^:]*?)\s*(:\s*(.+?)\s*)?\]\s*$/;
 const REGEXP_COMMENT = /^;.*/;
 const REGEXP_SINGLE_LINE = /^\s*(.*?)\s*?=\s*?(\S.*?)$/;
 const REGEXP_MULTI_LINE = /^\s*(.*?)\s*?=\s*?"(.*?)$/;
@@ -64,11 +64,11 @@ class Parser {
     }
 
     getParentSection(line) {
-        return line.match(REGEXP_SECTION_INHERITED)[2]
+        return line.match(REGEXP_SECTION)[3]
     }
 
     isInheritedSection(line) {
-        return line.match(REGEXP_SECTION_INHERITED);
+        return !!line.match(REGEXP_SECTION)[3];
     }
 
     isComment(line) {
