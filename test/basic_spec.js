@@ -43,6 +43,24 @@ describe("Basic testing includes reading of different files", function () {
         expect(data['section1']['key8']).to.equal('VALUE8');
     });
 
+    it("Read a basic, detect boolean values and properly convert them", function () {
+        var ini = new MultiIni.Class({ filters: [MultiIni.filters.boolean] });
+
+        var data = ini.read('test/data/boolean_values.ini');
+        expect(data).not.to.be.null;
+        expect(data['section1']).to.be.defined;
+        expect(data['section1']['key1']).to.equal(true);
+        expect(data['section1']['key2']).to.equal(false);
+        expect(data['section1']['key3']).to.equal(true);
+        expect(data['section1']['key4']).to.equal(false);
+        expect(data['section1']['key5']).to.equal(true);
+        expect(data['section1']['key6']).to.equal(false);
+        expect(data['section1']['key7']).to.equal(true);
+        expect(data['section1']['key8']).to.equal(false);
+        expect(data['section1']['key10']).to.equal(true);
+        expect(data['section1']['key11']).to.equal(false);
+    });
+
     it("Read a basic with a section with multi line values", function () {
         var ini = new MultiIni.Class();
         var data = ini.read('test/data/multi_line.ini');
