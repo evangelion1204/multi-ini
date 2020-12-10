@@ -20,6 +20,8 @@ const defaults = {
     constants: {},
 };
 
+const REGEXP_IGNORE_KEYS = /__proto__/;
+
 class Parser {
     constructor(options = {}) {
         this.options = Object.assign({}, defaults, options);
@@ -40,7 +42,7 @@ class Parser {
             current: {},
             multiLineKeys: false,
             multiLineValue: '',
-        }
+        };
 
         for (let line of lines) {
             for (let handler of this.handlers) {
@@ -60,11 +62,11 @@ class Parser {
     }
 
     getSection(line) {
-        return line.match(REGEXP_SECTION)[1]
+        return line.match(REGEXP_SECTION)[1];
     }
 
     getParentSection(line) {
-        return line.match(REGEXP_SECTION)[3]
+        return line.match(REGEXP_SECTION)[3];
     }
 
     isInheritedSection(line) {
@@ -84,7 +86,7 @@ class Parser {
 
         const check = result[2].match(/"/g);
 
-        return !check || (check.length % 2 === 0);
+        return !check || check.length % 2 === 0;
     }
 
     isMultiLine(line) {
@@ -96,7 +98,7 @@ class Parser {
 
         const check = result[2].match(/"/g);
 
-        return !check || (check.length % 2 === 0);
+        return !check || check.length % 2 === 0;
     }
 
     isMultiLineEnd(line) {
@@ -113,7 +115,11 @@ class Parser {
         let current = element;
         let previous = element;
         let array = false;
-        let key
+        let key;
+
+        if (keys.some((key) => REGEXP_IGNORE_KEYS.test(key))) {
+            return;
+        }
 
         for (key of keys) {
             if (this.isArray(key)) {
@@ -131,8 +137,7 @@ class Parser {
 
         if (array) {
             current.push(value);
-        }
-        else {
+        } else {
             previous[key] = value;
         }
 
@@ -157,10 +162,10 @@ class Parser {
         let [, key, value] = result;
 
         if (!this.options.keep_quotes) {
-            value = value.replace(/^\s*?"(.*?)"\s*?$/, "$1");
+            value = value.replace(/^\s*?"(.*?)"\s*?$/, '$1');
         }
 
-        return {key, value, status: STATUS_OK};
+        return { key, value, status: STATUS_OK };
     }
 
     getMultiKeyValue(line) {
@@ -176,7 +181,7 @@ class Parser {
             value = '"' + value;
         }
 
-        return {key, value};
+        return { key, value };
     }
 
     getMultiLineEndValue(line) {
@@ -192,7 +197,7 @@ class Parser {
             value = value + '"';
         }
 
-        return {value, status: STATUS_OK};
+        return { value, status: STATUS_OK };
     }
 
     getArrayKey(line) {
@@ -206,7 +211,7 @@ class Parser {
             return false;
         }
 
-        const {key, value} = this.getMultiKeyValue(line);
+        const { key, value } = this.getMultiKeyValue(line);
         const keys = key.split('.');
 
         ctx.multiLineKeys = keys;
@@ -220,17 +225,17 @@ class Parser {
             return false;
         }
 
-        const {value, status} = this.getMultiLineEndValue(line);
+        const { value, status } = this.getMultiLineEndValue(line);
 
         // abort on false of onerror callback if we meet an invalid line
         if (status === STATUS_INVALID && !this.options.oninvalid(line)) {
-            return ;
+            return;
         }
 
         // ignore whole multiline on invalid
         if (status === STATUS_INVALID && this.options.ignore_invalid) {
             ctx.multiLineKeys = false;
-            ctx.multiLineValue = "";
+            ctx.multiLineValue = '';
 
             return true;
         }
@@ -240,7 +245,7 @@ class Parser {
         this.assignValue(ctx.current, ctx.multiLineKeys, ctx.multiLineValue);
 
         ctx.multiLineKeys = false;
-        ctx.multiLineValue = "";
+        ctx.multiLineValue = '';
 
         return true;
     }
@@ -268,9 +273,13 @@ class Parser {
 
         const section = this.getSection(line);
 
+        if (REGEXP_IGNORE_KEYS.test(section)) {
+            return false;
+        }
+
         if (this.isInheritedSection(line)) {
-            const parentSection = this.getParentSection(line)
-            ctx.ini[section] = JSON.parse(JSON.stringify(ctx.ini[parentSection]))
+            const parentSection = this.getParentSection(line);
+            ctx.ini[section] = JSON.parse(JSON.stringify(ctx.ini[parentSection]));
         }
 
         if (typeof ctx.ini[section] === 'undefined') {
@@ -289,7 +298,7 @@ class Parser {
             return false;
         }
 
-        const {key, value, status} = this.getKeyValue(line);
+        const { key, value, status } = this.getKeyValue(line);
 
         // abort on false of onerror callback if we meet an invalid line
         if (status === STATUS_INVALID && !this.options.oninvalid(line)) {
@@ -303,7 +312,7 @@ class Parser {
 
         const keys = key.split('.');
 
-        this.assignValue(ctx.current, keys, value)
+        this.assignValue(ctx.current, keys, value);
 
         return true;
     }

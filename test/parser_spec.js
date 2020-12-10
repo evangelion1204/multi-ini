@@ -7,87 +7,78 @@ const expect = chai.expect;
 
 chai.use(sinonChai);
 
-describe("Testing parser", function () {
+describe('Testing parser', function () {
     var Parser = require('../src/parser');
 
-    it("Availability of the class", function () {
+    it('Availability of the class', function () {
         expect(Parser).not.to.be.undefined;
         expect(Parser).not.to.be.null;
     });
 
-    it("Instantiate with default params", function () {
+    it('Instantiate with default params', function () {
         var instance = new Parser();
 
         expect(instance).not.to.be.null;
     });
 
-    describe("getKeyValue", function () {
-        var instance = new Parser({keep_quotes: true});
+    describe('getKeyValue', function () {
+        var instance = new Parser({ keep_quotes: true });
 
-        it("Returning key value not matching", function () {
+        it('Returning key value not matching', function () {
             var wrapper = function () {
-                instance.getKeyValue("key");
+                instance.getKeyValue('key');
             };
 
             expect(wrapper).to.throw;
         });
     });
 
-    describe("getMultiKeyValue", function () {
-        var instance = new Parser({keep_quotes: true});
+    describe('getMultiKeyValue', function () {
+        var instance = new Parser({ keep_quotes: true });
 
-        it("Returning key value not matching", function () {
+        it('Returning key value not matching', function () {
             var wrapper = function () {
-                instance.getMultiKeyValue("")
+                instance.getMultiKeyValue('');
             };
 
             expect(wrapper).to.throw;
         });
     });
 
-    describe("getMultiLineEndValue", function () {
-        var instance = new Parser({keep_quotes: true});
+    describe('getMultiLineEndValue', function () {
+        var instance = new Parser({ keep_quotes: true });
 
-        it("Returning key value not matching", function () {
+        it('Returning key value not matching', function () {
             var wrapper = function () {
-                instance.getMultiLineEndValue("")
+                instance.getMultiLineEndValue('');
             };
 
             expect(wrapper).to.throw;
         });
     });
 
-    describe("handleSection", function () {
-        var instance = new Parser({keep_quotes: true});
-        it("Same section appears twice", function () {
-            var ctx = {ini: {}};
+    describe('handleSection', function () {
+        var instance = new Parser({ keep_quotes: true });
+        it('Same section appears twice', function () {
+            var ctx = { ini: {} };
 
-            instance.handleSection(ctx, "[multi]");
-            instance.handleSection(ctx, "[another]");
-            instance.handleSection(ctx, "[multi]");
+            instance.handleSection(ctx, '[multi]');
+            instance.handleSection(ctx, '[another]');
+            instance.handleSection(ctx, '[multi]');
 
             expect(ctx.ini.multi).to.be.defined;
             expect(ctx.ini.another).to.be.defined;
             expect(ctx.current).to.equal(ctx.ini.multi);
         });
 
-        it("Section inherits from other section", function () {
-            var ctx = {ini: {}};
+        it('Section inherits from other section', function () {
+            var ctx = { ini: {} };
 
-            instance.handleSection(ctx, "[parent]");
-            instance.handleSection(ctx, "[child:parent]");
+            instance.handleSection(ctx, '[parent]');
+            instance.handleSection(ctx, '[child:parent]');
 
             expect(ctx.ini.parent).to.be.defined;
             expect(ctx.ini.child).to.be.defined;
         });
     });
-
-    describe("handleSingleLine", function () {
-        var instance = new Parser({keep_quotes: true});
-
-        it("", function () {
-
-        });
-    });
-
 });
