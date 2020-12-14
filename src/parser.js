@@ -122,6 +122,8 @@ class Parser {
         }
 
         for (key of keys) {
+            if (key == 'prototype')
+                continue;
             if (this.isArray(key)) {
                 key = this.getArrayKey(key);
                 array = true;
