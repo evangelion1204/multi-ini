@@ -122,7 +122,7 @@ class Parser {
         }
 
         for (key of keys) {
-            if (key == 'prototype')
+            if (key == 'prototype' || key == '__proto__' || key == 'constructor')
                 continue;
             if (this.isArray(key)) {
                 key = this.getArrayKey(key);
