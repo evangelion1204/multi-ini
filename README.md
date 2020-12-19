@@ -137,6 +137,12 @@ content = serializer.serialize({
 
 ## Changelog
 
+### 2.1.2
+* Fixed prototype pollution by ignoring `constructor`
+
+### 2.1.1
+* Fixed prototype pollution by ignoring `__proto__`
+
 ### 1.0.1
 * Fixed bug with `keep_quotes` ignored when writing files
 
