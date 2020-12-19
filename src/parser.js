@@ -20,7 +20,7 @@ const defaults = {
     constants: {},
 };
 
-const REGEXP_IGNORE_KEYS = /__proto__/;
+const REGEXP_IGNORE_KEYS = /__proto__|constructor|prototype/;
 
 class Parser {
     constructor(options = {}) {
