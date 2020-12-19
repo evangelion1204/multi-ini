@@ -138,7 +138,7 @@ content = serializer.serialize({
 ## Changelog
 
 ### 2.1.2
-* Fixed prototype pollution by ignoring `constructor`
+* Fixed prototype pollution by ignoring `constructor` and `prototype`
 
 ### 2.1.1
 * Fixed prototype pollution by ignoring `__proto__`
