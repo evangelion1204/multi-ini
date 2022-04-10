@@ -319,7 +319,9 @@ class Parser {
     }
 
     createSection(ctx, section) {
-        const sections = section.split('.').map((name) => name.trim());
+        const sections = (this.options.nested_section_names ? section.split('.') : [section]).map(
+            (name) => name.trim(),
+        );
 
         ctx.current = sections.reduce((ini, name) => {
             if (typeof ini[name] === 'undefined') {
