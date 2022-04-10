@@ -15,6 +15,8 @@ const STATUS_INVALID = 1;
 const defaults = {
     ignore_invalid: true,
     keep_quotes: false,
+    nested_section_names: false,
+    keep_zero_prefix: false,
     oninvalid: () => true,
     filters: [],
     constants: {},
@@ -277,16 +279,15 @@ class Parser {
             return false;
         }
 
+        this.createSection(ctx, section);
+
         if (this.isInheritedSection(line)) {
             const parentSection = this.getParentSection(line);
-            ctx.ini[section] = JSON.parse(JSON.stringify(ctx.ini[parentSection]));
+            ctx.current = Object.assign(
+                ctx.current,
+                JSON.parse(JSON.stringify(ctx.ini[parentSection])),
+            );
         }
-
-        if (typeof ctx.ini[section] === 'undefined') {
-            ctx.ini[section] = {};
-        }
-
-        ctx.current = ctx.ini[section];
 
         return true;
     }
@@ -315,6 +316,18 @@ class Parser {
         this.assignValue(ctx.current, keys, value);
 
         return true;
+    }
+
+    createSection(ctx, section) {
+        const sections = section.split('.').map((name) => name.trim());
+
+        ctx.current = sections.reduce((ini, name) => {
+            if (typeof ini[name] === 'undefined') {
+                ini[name] = {};
+            }
+
+            return ini[name];
+        }, ctx.ini);
     }
 }
 

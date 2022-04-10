@@ -11,10 +11,10 @@ export function uppercase(value) {
 }
 
 export function trim(value) {
-    return  _.isString(value) ? value.trim() : value;
+    return _.isString(value) ? value.trim() : value;
 }
 
-export function constants(value, options) {
+export function constants(value, options = {}) {
     if (!_.isString(value) || _.isEmpty(options.constants)) {
         return value;
     }
@@ -51,4 +51,16 @@ export function boolean(value) {
         default:
             return value;
     }
+}
+
+export function integer(value, options = {}) {
+    if (
+        isNaN(value) ||
+        isNaN(parseInt(value, 10)) ||
+        (options.keep_zero_prefix && value.length > 1 && value[0] === '0') // dont drop zero prefixes
+    ) {
+        return value;
+    }
+
+    return parseInt(value, 10);
 }
