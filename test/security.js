@@ -28,6 +28,9 @@ describe('Testing security', function () {
         expect({}.__proto__.path_polluted).to.be.undefined;
         expect(typeof path_polluted).to.equal('undefined');
 
+        expect(data['section_with_proto']).to.be.undefined;
+        expect({}.__proto__.polluted).to.be.undefined;
+
         console.log(data);
     });
 });
