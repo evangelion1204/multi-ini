@@ -24,10 +24,10 @@ ini.write(file, content);
 Following options are available:
 
 -   encoding \[_'utf8'_\] - directly passed to readFileSync
--   keep*quotes \[\_false*\] - does not strip quotes around values
+-   keep_quotes \[_false_\] - does not strip quotes around values
 -   filters - predefined _lowercase_, _uppercase_, _trim_, _constants_, _boolean_, _integer_
--   nested*section_names \[\_false*\] - support to parse section names e.g. `[section.subsection]`
--   keep_zero_prefix \[\_false\*\] - controls the integer parsing by ignoring numbers with leading 0
+-   nested_section_names \[_false_\] - support to parse section names e.g. `[section.subsection]`
+-   keep_zero_prefix \[_false_\] - controls the integer parsing by ignoring numbers with leading 0
 
 ### Examples
 

@@ -491,22 +491,41 @@ describe('Basic testing includes reading of different files', function () {
         );
     });
 
-    it('Support section names with . resulting in nesting', function () {
-        var instance = new MultiIni.Class();
-        var data = instance.read('test/data/section_names.ini');
+    describe('Support section names with .', () => {
+        it('enabled', function () {
+            var instance = new MultiIni.Class({ nested_section_names: true });
+            var data = instance.read('test/data/section_names.ini');
 
-        expect(data).to.deep.equal({
-            normal: {
-                item: '0',
-            },
-            nested: {
-                child1: {
+            expect(data).to.deep.equal({
+                normal: {
+                    item: '0',
+                },
+                nested: {
+                    child1: {
+                        item1: '1',
+                    },
+                    child2: {
+                        item2: '2',
+                    },
+                },
+            });
+        });
+
+        it('default/disabled', function () {
+            var instance = new MultiIni.Class();
+            var data = instance.read('test/data/section_names.ini');
+
+            expect(data).to.deep.equal({
+                normal: {
+                    item: '0',
+                },
+                'nested.child1': {
                     item1: '1',
                 },
-                child2: {
+                'nested.child2': {
                     item2: '2',
                 },
-            },
+            });
         });
     });
 });
