@@ -1,3 +1,4 @@
+.nyc_output
 .npmrc
 coverage/
 node_modules/
