@@ -4,4 +4,6 @@ node_modules/
 .idea/
 .git/
 .travis.yml
+.npmrc
+.nyc_output
 lib/.keepme
