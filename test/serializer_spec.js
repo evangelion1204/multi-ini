@@ -20,25 +20,42 @@ describe('Testing serializer', function () {
 
         expect(instance).not.to.be.null;
     });
-    
-    it('serialize should return a correct string with quoted keys', function () {
-       var instance = new Serializer();
 
-        expect(instance.serialize({
-            production: {
-                key: 'value'
-            }
-        })).to.be.equal('[production]\nkey="value"\n');
+    it('serialize should return a correct string with quoted keys', function () {
+        var instance = new Serializer();
+
+        expect(
+            instance.serialize({
+                production: {
+                    key: 'value',
+                },
+            }),
+        ).to.be.equal('[production]\nkey="value"\n');
     });
 
     it('serialize with keep_quotes should return a correct string with and without quotes', function () {
-        var instance = new Serializer({keep_quotes: true});
+        var instance = new Serializer({ keep_quotes: true });
 
-        expect(instance.serialize({
-            production: {
-                quoted: '"quoted"',
-                not_quoted: 'not_quoted'
-            }
-        })).to.be.equal('[production]\nquoted="quoted"\nnot_quoted=not_quoted\n');
+        expect(
+            instance.serialize({
+                production: {
+                    quoted: '"quoted"',
+                    not_quoted: 'not_quoted',
+                },
+            }),
+        ).to.be.equal('[production]\nquoted="quoted"\nnot_quoted=not_quoted\n');
+    });
+
+    it('Read multi line ini of issue #12 with windows line breaks', function () {
+        const data = {
+            root: {
+                anonMode: false,
+            },
+        };
+
+        const serializer = new Serializer();
+        const ini = serializer.serialize(data);
+
+        expect(ini).to.be.equal('[root]\nanonMode=false\n');
     });
 });
