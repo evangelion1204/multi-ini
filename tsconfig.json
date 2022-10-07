@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "sourceMap": true,
+        "declaration": true,
+        "typeRoots": ["./node_modules/@types", "./types"],
+        "noImplicitAny": true,
+        "allowSyntheticDefaultImports": true,
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "lib": ["DOM", "ES6", "DOM.Iterable", "ScriptHost", "ES2019"],
+        "downlevelIteration": true,
+        "baseUrl": "./src",
+        "outDir": "./dist",
+        "rootDir": "./src"
+    },
+    "include": ["src/**/*"]
+}
